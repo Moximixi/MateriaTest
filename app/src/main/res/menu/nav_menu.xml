@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group
+        android:id="@+id/group1"
+        android:checkableBehavior="single">
+        <item
+            android:title="书籍"
+            android:id="@+id/nav_book"
+            android:icon="@drawable/book"/>
+        <item
+            android:title="搜索"
+            android:id="@+id/nav_search"
+            android:icon="@drawable/search"/>
+    </group>
+
+    <group
+        android:id="@+id/group2"
+        android:checkableBehavior="single">
+        <item
+        android:title="添加新标签"
+        android:id="@+id/nav_add"
+        android:icon="@drawable/add"/>
+    </group>
+
+    <group
+        android:id="@+id/group3"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_setting"
+            android:icon="@drawable/setting"
+            android:title="设置"/>
+        <item
+            android:title="关于"
+            android:icon="@drawable/about"
+            android:id="@+id/nav_about"/>
+    </group>
+
+</menu>

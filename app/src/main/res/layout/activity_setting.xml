@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_setting"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.administrator.materiatest.SettingActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/Base.ThemeOverlay.AppCompat.Light">
+    </android.support.v7.widget.Toolbar>
+
+    <TextView
+        android:id="@+id/setting_text1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="自动获取书籍详情"
+        android:textSize="14sp"
+        android:textColor="#FF0000"
+        android:layout_below="@+id/toolbar"
+        android:layout_marginTop="10dp"
+        />
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="网络服务"
+        android:textSize="16sp"
+        android:background="@android:color/transparent"
+        android:layout_below="@+id/setting_text1"
+        android:layout_marginTop="10dp"/>
+
+    <View
+        android:id="@+id/setting_line1"
+        android:layout_width="match_parent"
+        android:layout_height="2dip"
+        android:layout_below="@+id/button1"
+        android:background="#CCCCCC"
+        android:layout_marginTop="10dp" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="自动填充“网站”栏"
+        android:background="@android:color/transparent"
+        android:layout_below="@+id/setting_line1"
+        android:textSize="16sp"
+        android:layout_marginTop="10dp"/>
+
+    <SeekBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/seekBar"
+        android:layout_alignBottom="@+id/button2"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="14dp" />
+
+    <TextView
+        android:id="@+id/setting_text2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="备份"
+        android:textSize="14sp"
+        android:textColor="#FF0000"
+        android:layout_below="@+id/button2"
+        android:layout_marginTop="10dp"/>
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="备份位置"
+        android:background="@android:color/transparent"
+        android:textSize="16sp"
+        android:layout_below="@+id/setting_text2"
+        android:layout_marginTop="10dp"/>
+
+
+    <View
+        android:id="@+id/setting_line2"
+        android:layout_width="match_parent"
+        android:layout_height="2dip"
+        android:layout_below="@+id/button3"
+        android:background="#CCCCCC"
+        android:layout_marginTop="10dp" />
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="备份应用"
+        android:background="@android:color/transparent"
+        android:textSize="16sp"
+        android:layout_below="@+id/setting_line2"
+        android:layout_marginTop="10dp"/>
+
+
+    <View
+        android:id="@+id/setting_line3"
+        android:layout_width="match_parent"
+        android:layout_height="2dip"
+        android:layout_below="@+id/button4"
+        android:background="#CCCCCC"
+        android:layout_marginTop="10dp"/>
+
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="恢复应用"
+        android:background="@android:color/transparent"
+        android:textSize="16sp"
+        android:layout_below="@+id/setting_line3"
+        android:layout_marginTop="10dp"/>
+
+
+    <View
+        android:id="@+id/setting_line4"
+        android:layout_width="match_parent"
+        android:layout_height="2dip"
+        android:layout_below="@+id/button5"
+        android:background="#CCCCCC"/>
+    <Button
+        android:id="@+id/button6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="导出为.csv文件"
+        android:background="@android:color/transparent"
+        android:textSize="16sp"
+        android:layout_below="@+id/setting_line4"
+        android:layout_marginTop="10dp"/>
+    <TextView
+        android:id="@+id/setting_text3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Genneral"
+        android:textSize="14sp"
+        android:textColor="#FF0000"
+        android:layout_below="@+id/button6"
+        android:layout_marginTop="10dp"/>
+    <Button
+        android:id="@+id/button7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Check Updates on StartUp"
+        android:textAllCaps="false"
+        android:background="@android:color/transparent"
+        android:layout_below="@+id/setting_text3"
+        android:textSize="16sp"
+        android:layout_marginTop="10dp"/>
+
+    <SeekBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/seekBar2"
+        android:layout_alignBottom="@+id/button7"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="14dp" />
+
+</RelativeLayout>

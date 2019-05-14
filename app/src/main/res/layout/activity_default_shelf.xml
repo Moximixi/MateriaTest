@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/Base.ThemeOverlay.AppCompat.Light">
+        </android.support.v7.widget.Toolbar>
+        <com.getbase.floatingactionbutton.FloatingActionsMenu
+            android:id="@+id/floatingactionbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="250dp"
+            android:layout_marginTop="380dp"
+            fab:fab_labelStyle="@style/floatingActionsMenu_fab_style">
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/addbook"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_icon="@drawable/pencil"
+                fab:fab_title="添加书籍"
+                fab:fab_size="mini" />
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/massaddition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_icon="@drawable/pencil"
+                fab:fab_title="批量添加"
+                fab:fab_size="mini" />
+        </com.getbase.floatingactionbutton.FloatingActionsMenu>
+    </FrameLayout>
+    <android.support.design.widget.NavigationView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:id="@+id/nav_view"
+        app:menu="@menu/nav_menu"
+        app:headerLayout="@layout/nav_header">
+    </android.support.design.widget.NavigationView>
+</android.support.v4.widget.DrawerLayout>
+

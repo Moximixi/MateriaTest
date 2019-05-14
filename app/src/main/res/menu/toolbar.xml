@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <item
+        android:icon="@drawable/down"
+        android:id="@+id/menu_all"
+        android:title="所有"
+        app:showAsAction="never" />
+    <item
+        android:icon="@drawable/down"
+        android:id="@+id/menu_default"
+        android:title="默认书架"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_search"
+        android:orderInCategory="60"
+        android:title="搜索"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/menu_more"
+        android:icon="@drawable/down"
+        android:title="更多"
+        app:showAsAction="always" />
+
+</menu>
