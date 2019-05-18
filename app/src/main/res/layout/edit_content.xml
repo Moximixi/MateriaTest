@@ -209,10 +209,11 @@
         android:layout_width="260dp"
         android:layout_height="wrap_content"
         android:textSize="20dp"
-        android:text="qeqwewq"
+        android:text=""
         android:layout_marginLeft="80dp"
         android:layout_below="@+id/hengxian"
         android:layout_marginTop="110dp"
+        android:hint="@string/edit_biji"
         />
 
     <EditText
@@ -222,8 +223,10 @@
         android:layout_marginLeft="80dp"
         android:layout_below="@+id/hengxian"
         android:layout_marginTop="160dp"
-        android:text="qqwe"
+        android:text="@string/dialog_addTag"
         android:textSize="20dp"
+        android:focusable="false"
+        android:textColor="@color/gray"
         />
 
     <EditText

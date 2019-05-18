@@ -20,5 +20,7 @@
     <string name="dialog_title_shelf">书架名称</string>
     <string name="dialog_ok">确定</string>
     <string name="dialog_throw">舍弃</string>
+    <string name="dialog_title2">选择标签</string>
+    <string name="dialog_addTag">添加标签</string>
 
 </resources>
