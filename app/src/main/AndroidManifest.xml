@@ -43,6 +43,18 @@
         <activity android:name=".AboutActivity"
             android:label="关于">
         </activity>
+
+
+        <activity
+            android:name=".EditActivity"
+            android:label="@string/edit_toolbar_name"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.EDIT"/>
+
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

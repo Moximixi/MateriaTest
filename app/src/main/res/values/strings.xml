@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">MateriaTest</string>
+    <string name="edit_toolbar_name">编辑书籍详情</string>
+    <string name="action_save">保存</string>
+    <string name="edit_biaoti">标题：</string>
+    <string name="edit_zuoze">作者：</string>
+    <string name="edit_yizhe">译者：</string>
+    <string name="edit_chuabnshe">出版社：</string>
+    <string name="edit_chubanshijian">出版时间：</string>
+    <string name="edit_ISBN">ISBN：</string>
+    <string name="edit_xiangqing">详情(来源：DOUBAN.COM)</string>
+    <string name="edit_yueduzhuangtai">阅读状态</string>
+    <string name="edit_shujia">书架</string>
+    <string name="edit_biji">笔记</string>
+    <string name="edit_biaoqian">标签</string>
+    <string name="edit_wangzhi">网址</string>
+    <string name="dialog_title">舍弃书籍</string>
+    <string name="dialog_message">我们不会保存此书，书籍信息会被丢弃。</string>
+    <string name="dialog_cancel">取消</string>
+    <string name="dialog_title_shelf">书架名称</string>
+    <string name="dialog_ok">确定</string>
+    <string name="dialog_throw">舍弃</string>
+
 </resources>
