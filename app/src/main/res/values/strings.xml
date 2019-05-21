@@ -1,3 +1,257 @@
 <resources>
-    <string name="app_name">MateriaTest</string>
+    <string name="app_name">BookShelf</string>
+    <string name="about_preference_category_title">关于</string>
+    <string name="about_preference_donate_title">捐赠</string>
+    <string name="about_preference_donate_toast">我的账号已复制到剪贴板，感谢您的捐赠！</string>
+    <string name="about_preference_feedback_summary">发送建议或反馈</string>
+    <string name="about_preference_feedback_title">反馈</string>
+    <string name="about_preference_github_repository">开源项目</string>
+    <string name="about_preference_license">开源许可</string>
+    <string name="about_preference_license_dialog">开源许可</string>
+    <string name="add_label_dialog_title">选择标签</string>
+    <string name="author_suffix">著</string>
+    <string name="batch_add_activity_discard_dialog_content">我们不会保存您此次添加的图书。确认要舍弃它们？</string>
+    <string name="batch_add_activity_discard_dialog_positive">舍弃</string>
+    <string name="batch_add_activity_discard_dialog_title">舍弃书籍</string>
+    <string name="batch_add_added_snack_bar">\"%1$s\" 添加成功</string>
+    <string name="batch_add_delete_book_dialog_content">确认要把此书从列表中删除吗？</string>
+    <string name="batch_add_delete_book_dialog_positive">删除</string>
+    <string name="batch_add_delete_book_dialog_title">删除书籍</string>
+    <string name="batch_add_menu_item_save">保存</string>
+    <string name="batch_add_navigation_close">关闭</string>
+    <string name="batch_add_tab_title_0">扫描</string>
+    <string name="batch_add_tab_title_1">已添加(%1$d)</string>
+    <string name="batch_add_title">批量添加</string>
+    <string name="book_author_edit_text_hint">多个请用逗号隔开</string>
+    <string name="book_author_text_view">作者：</string>
+    <string name="book_cover_image_view_hint">书籍封面</string>
+    <string name="book_cover_text_view">封面</string>
+    <string name="book_deleted_snack_bar_0">已删除</string>
+    <string name="book_deleted_snack_bar_1">已删除</string>
+    <string name="book_deleted_snack_bar_undo">撤销</string>
+    <string name="book_detail_book_delete_toast">书籍已删除！</string>
+    <string name="book_detail_header_text_view">彩蛋：您于以下时间添加此书</string>
+    <string name="book_detail_labels_image_view">标签</string>
+    <string name="book_detail_menu_delete">删除书籍</string>
+    <string name="book_detail_title">详情</string>
+    <string name="book_duplicate_dialog_content">本书已经在您的书架上了，您确定还要添加一次吗？</string>
+    <string name="book_duplicate_dialog_positive">添加</string>
+    <string name="book_duplicate_dialog_title">书籍已存在</string>
+    <string name="book_edit_activity_discard_dialog_content">我们不会保存此书，书籍信息会被丢弃。</string>
+    <string name="book_edit_activity_discard_dialog_positive">舍弃</string>
+    <string name="book_edit_activity_discard_dialog_title">舍弃书籍</string>
+    <string name="book_edit_activity_title">编辑书籍详情</string>
+    <string name="book_edit_menu_save">保存</string>
+    <string name="book_info_author_clipboard_content">作者：%1$s</string>
+    <string name="book_info_author_image_view">作者</string>
+    <string name="book_info_author_toast">作者已经复制到剪贴板！</string>
+    <string name="book_info_isbn_clipboard_content">ISBN: %1$s</string>
+    <string name="book_info_isbn_image_view">ISBN</string>
+    <string name="book_info_isbn_toast">ISBN 已经复制到剪贴板！</string>
+    <string name="book_info_publisher_clipboard_content">出版社：%1$s</string>
+    <string name="book_info_publisher_image_view">出版社</string>
+    <string name="book_info_publisher_toast">出版社已复制到剪贴板！</string>
+    <string name="book_info_pubtime_clipboard_content">出版时间：%1$s</string>
+    <string name="book_info_pubtime_image_view">出版时间</string>
+    <string name="book_info_pubtime_toast">出版时间已复制到剪贴板！</string>
+    <string name="book_info_title">信息(来源: %1$s)</string>
+    <string name="book_info_title_clipboard_content">标题：%1$s</string>
+    <string name="book_info_title_image_view">标题</string>
+    <string name="book_info_title_toast">标题已复制到剪贴板！</string>
+    <string name="book_info_translator_clipboard_content">译者：%1$s</string>
+    <string name="book_info_translator_image_view">译者</string>
+    <string name="book_info_translator_toast">译者已复制到剪贴板！</string>
+    <string name="book_isbn_edit_text_hint">ISBN</string>
+    <string name="book_isbn_text_view">ISBN:</string>
+    <string name="book_pubdate_text_view">出版时间：</string>
+    <string name="book_publisher_edit_text_hint">出版社</string>
+    <string name="book_publisher_text_view">出版社：</string>
+    <string name="book_pubmonth_edit_text_hint">月</string>
+    <string name="book_pubyear_edit_text_hint">年</string>
+    <string name="book_shelf_image_view">书架</string>
+    <string name="book_title_edit_text_hint">标题</string>
+    <string name="book_title_label">书籍信息</string>
+    <string name="book_title_text_view">标题：</string>
+    <string name="book_translator_edit_text_hint">多个用逗号隔开</string>
+    <string name="book_translator_text_view">译者：</string>
+    <string name="camera_permission_denied">请授予相机权限以扫描书籍条形码！</string>
+    <string name="custom_book_shelf_dialog_edit_text">输入新的书架的名称</string>
+    <string name="custom_book_shelf_dialog_title">书架名称</string>
+    <string name="custom_spinner_item">添加新书架</string>
+    <string name="default_book_shelf_name">默认书架</string>
+    <string name="delete_bookshelf_dialog_content">我们将删除此书架，上面的所有书籍都会移至默认书架，书籍不会被删除。</string>
+    <string name="delete_bookshelf_dialog_positive">删除</string>
+    <string name="delete_bookshelf_dialog_title">删除书架</string>
+    <string name="delete_label_dialog_content">我们将删除此标签，并从每本书上撕去，书籍不会被删除。</string>
+    <string name="delete_label_dialog_positive">删除</string>
+    <string name="delete_label_dialog_title">删除标签</string>
+    <string name="drawer_header_email">管理您的书籍</string>
+    <string name="drawer_item_about">关于</string>
+    <string name="drawer_item_books">书籍</string>
+    <string name="drawer_item_create_new_label">添加新标签</string>
+    <string name="drawer_item_search">搜索</string>
+    <string name="drawer_item_settings">设置</string>
+    <string name="drawer_section_label">标签</string>
+    <string name="fab_menu_1">添加书籍</string>
+    <string name="fab_menu_2">批量添加</string>
+    <string name="input_isbn_manually_content">请输入书籍的 ISBN 码（10或13位数字）</string>
+    <string name="input_isbn_manually_edit_text">ISBN</string>
+    <string name="input_isbn_manually_positive">添加</string>
+    <string name="input_isbn_manually_title">手动添加</string>
+    <string name="isbn_invalid">ISBN 应当是10或13位数字！</string>
+    <string name="isbn_unmatched_dialog_batch_content">此书的 ISBN 是%1$s，我们无法获取书籍详情，请检查 ISBN，您可以再次扫描或使用单个添加功能手动添加本书。</string>
+    <string name="isbn_unmatched_dialog_batch_title">无法获取详情</string>
+    <string name="isbn_unmatched_dialog_content">此书的 ISBN 是%1$s，我们无法获取书籍详情，请检查 ISBN，您可以手动输入详情或重新扫描</string>
+    <string name="isbn_unmatched_dialog_negative">重新扫描</string>
+    <string name="isbn_unmatched_dialog_positive">手动输入</string>
+    <string name="isbn_unmatched_dialog_title">无法获取详情</string>
+    <string name="label_add_new_dialog_edit_text">输入新的标签的名称</string>
+    <string name="label_add_new_dialog_title">标签名称</string>
+    <string name="label_choice_dialog_neutral">添加标签</string>
+    <string name="label_choice_dialog_title">选择标签</string>
+    <string name="label_edit_text_hint">添加标签</string>
+    <string name="label_image_view">标签</string>
+    <string name="menu_main_delete_bookshelf">删除书架</string>
+    <string name="menu_main_delete_label">删除标签</string>
+    <string name="menu_main_rename_bookshelf">重命名书架</string>
+    <string name="menu_main_rename_label">重命名标签</string>
+    <string name="menu_main_search">搜索</string>
+    <string name="menu_multi_select_item_add_label">添加标签</string>
+    <string name="menu_main_sort">排序</string>
+    <string name="menu_multi_select_item_delete">删除</string>
+    <string name="menu_multi_select_item_move_bookshelf">移动书架</string>
+    <string name="menu_multi_select_item_select_all">全选</string>
+    <string name="menu_single_add_flash_off">闪光灯[关闭]</string>
+    <string name="menu_single_add_flash_on">闪光灯[开启]</string>
+    <string name="menu_single_add_manually">手动输入 ISBN</string>
+    <string name="month_invalid">月份应当是1至12的数字！</string>
+    <string name="move_to_dialog_neutral">添加书架</string>
+    <string name="move_to_dialog_title">选择书架</string>
+    <string name="note_edit_text_hint">笔记</string>
+    <string name="pubdate_unset">未设置</string>
+    <string name="reading_status_image_view">阅读状况</string>
+    <string name="rename_bookshelf_dialog_edit_text">输入新的书架的名称</string>
+    <string name="rename_bookshelf_dialog_title">重命名书架</string>
+    <string name="rename_label_dialog_edit_text">输入新的标签的名称</string>
+    <string name="rename_label_dialog_title">重命名标签</string>
+    <string name="request_failed_dialog_batch_content">此书的 ISBN 是%1$s，我们无法获取书籍详情，请检查您的网络。您可以再次扫描或使用单个添加功能手动添加本书。</string>
+    <string name="request_failed_dialog_content">此书的 ISBN 是%1$s，我们无法获取书籍详情，请检查您的网络。您可以手动输入详情或重新扫描。</string>
+    <string name="search_view_hint">搜索书籍</string>
+    <string name="settings_auto_complete_website_title">自动填充“网站”栏</string>
+    <string name="settings_info_retrieval">自动获取书籍详情</string>
+    <string name="settings_settings">设置</string>
+    <string name="settings_web_services_title">网络服务</string>
+    <string name="single_scan_toolbar">扫描条形码</string>
+    <string name="sort_choice_dialog_positive">排序</string>
+    <string name="sort_choice_dialog_title">排序依据</string>
+    <string name="spinner_all_bookshelf">所有</string>
+    <string name="tool_bar_navigation_description">舍弃</string>
+    <string name="website_edit_text_hint">网站</string>
+    <string-array name="reading_status_array">
+        <item>阅读状态未设置</item>
+        <item>未读</item>
+        <item>阅读中</item>
+        <item>已读</item>
+    </string-array>
+    <string-array name="main_sort_dialog">
+        <item>标题</item>
+        <item>作者</item>
+        <item>出版社</item>
+        <item>出版时间</item>
+    </string-array>
+    <string-array name="settings_web_services_entries">
+        <item>DouBan.com</item>
+        <item>OpenLibrary.org</item>
+    </string-array>
+    <string name="storage_permission_toast1">请授予存储空间权限以便更改您的备份目录！</string>
+    <string name="storage_permission_toast2">请授予存储空间权限以便保存您的备份！</string>
+    <string name="storage_permission_toast3">请授予存储空间权限以便恢复您的备份！</string>
+    <string name="title_empty">标题不能为空！</string>
+    <string name="settings_backup_category">备份</string>
+    <string name="settings_backup_location_title">备份位置</string>
+    <string name="settings_backup_title">备份应用</string>
+    <string name="settings_restore_title">恢复应用</string>
+    <string name="restore_confirm_dialog_content">恢复此备份将会覆盖您目前所有的书籍和设置，此操作不能被还原！你确定要继续恢复备份吗？</string>
+    <string name="restore_confirm_dialog_title">注意</string>
+    <string name="restore_delete_dialog_content">你确定要删除此备份吗？</string>
+    <string name="restore_delete_dialog_title">删除备份</string>
+    <string name="restore_dialog_content">选择您要恢复的备份：</string>
+    <string name="restore_dialog_title">备份文件</string>
+    <string name="restore_fail_toast">恢复失败！请您保留日志文件并联系开发者！</string>
+    <string name="restore_no_backup_toast">看上去在备份目录下没有任何备份文件…</string>
+    <string name="restore_progress_dialog_title">正在恢复应用</string>
+    <string name="restore_succeed_toast">恢复成功！应用将在2秒钟后自动重启…</string>
+    <string name="choose_folder_dialog_choose">选择</string>
+    <string name="backup_fail_toast">备份失败！请保存日志文件并联系开发者！</string>
+    <string name="backup_progress_dialog_content">请稍候…</string>
+    <string name="backup_progress_dialog_title">正在备份应用</string>
+    <string name="backup_succeed_toast">备份成功！备份文件：%1$s</string>
+    <string name="rating_dialog_content">如果您觉得此 APP 对您有所帮助，请为我们在应用市场评分。感谢您的支持！</string>
+    <string name="rating_dialog_negative">退出</string>
+    <string name="rating_dialog_neutral">不再提醒</string>
+    <string name="rating_dialog_positive">评分</string>
+    <string name="rating_dialog_title">评分</string>
+    <string name="separator_text_view">详情(来源: %1$s)</string>
+    <string name="settings_web_services_min_toast">请至少选择一个网络服务！</string>
+    <string name="about_preference_rate_title">评分</string>
+    <string name="drawer_item_donate">捐赠</string>
+    <string name="about_preference_rate_summary">如果觉得好用，请为我们打五分</string>
+    <string name="about_donate_dialog_content">您的捐赠是我们继续努力的动力所在。\n我的支付宝&amp; PayPal 账户是:smartjinyu@gmail.com.\n感谢您的支持！</string>
+    <string name="about_donate_dialog_negative0">复制账号</string>
+    <string name="about_donate_dialog_positive0">前往支付宝</string>
+    <string name="about_preference_donate_summary">非常欢迎您的捐赠</string>
+    <string name="about_preference_term_of_service">使用条款</string>
+    <string name="accept_term_of_service_dialog_deny_toast">您必须接受使用条款后才能继续使用本应用！</string>
+    <string name="accept_term_of_service_dialog_negative">拒绝</string>
+    <string name="accept_term_of_service_dialog_positive">接受</string>
+    <string name="cover_change_camera_permission_denied">请授予相机权限以拍摄封面照片！</string>
+    <string name="cover_change_dialog_title">更换封面</string>
+    <string name="cover_change_fail">处理封面图片错误！请查看日志文件并联系开发者！</string>
+    <string name="cover_change_no_camera_app">没有找到已安装的相机应用！</string>
+    <string name="drawer_item_donate_click_toast">我的 PayPal &amp; 支付宝账号已经复制到剪贴板，感谢您的捐赠！</string>
+    <string name="export_csv_caution_dialog_content">此功能是为了您更好地管理图书，导出的.csv文件不能再被导入本应用。\n如果您想要将来恢复应用数据，请使用备份\\还原功能！</string>
+    <string name="export_csv_caution_dialog_title">注意</string>
+    <string name="export_csv_dialog_at_least_toast">请至少选择一项！</string>
+    <string name="export_csv_dialog_title">选择需要导出的项目</string>
+    <string name="export_csv_export_fail_toast">导出失败！请查看日志并联系作者！</string>
+    <string name="export_csv_export_succeed_toast">导出成功！文件路径：%1$s</string>
+    <string name="export_csv_file_copyright">以上数据的版权由书籍信息提供网站保留，请按照它们的版权要求使用这些数据，本软件不对此负责。</string>
+    <string name="export_csv_file_end">从 BookShelf 导出(http://coolapk.com/apk/com.smartjinyu.mybookshelf)</string>
+    <string name="export_csv_file_order">编号</string>
+    <string name="export_csv_file_time">导出时间：%1$s</string>
+    <string name="export_progress_dialog_content">请稍候…</string>
+    <string name="export_progress_dialog_title">正在导出</string>
+    <string name="menu_single_add_totally_manually">手动添加书籍</string>
+    <string name="new_version_find_dialog_content">BookShelf 发布新版本啦！\n最新版是%1$s.\n我们建议您尽快更新，如果您的应用市场里还未上线新版本，请到我的博客获取。</string>
+    <string name="new_version_find_dialog_negative">我的博客</string>
+    <string name="new_version_find_dialog_positive">应用市场</string>
+    <string name="new_version_find_dialog_title">发现新版本</string>
+    <string name="settings_export_to_csv_summary">导出为.csv文件以便管理</string>
+    <string name="settings_export_to_csv_title">导出为.csv文件</string>
+    <string name="shortcut_name_add">添加书籍</string>
+    <string name="shortcut_name_search">搜索</string>
+    <string name="storage_permission_toast5">请授予存储空间权限以导出您的书籍！</string>
+    <string-array name="cover_change_dialog_list">
+        <item>拍摄新图片</item>
+        <item>从相册选择图片</item>
+    </string-array>
+    <string-array name="export_csv_dialog_list">
+        <item>标题</item>
+        <item>作者</item>
+        <item>译者</item>
+        <item>出版社</item>
+        <item>出版时间</item>
+        <item>ISBN</item>
+        <item>阅读状态</item>
+        <item>书架</item>
+        <item>标签</item>
+        <item>笔记</item>
+        <item>网站</item>
+    </string-array>
+    <string name="book_detail_browser_not_found">没有找到支持的浏览器！</string>
+    <string name="cover_change_no_choose_picture_app">没有找到支持的图片选择工具！</string>
+    <string name="menu_multi_select_item_set_reading_status">设置阅读状态</string>
+    <string name="about_preference_privacy_policy">隐私政策</string>
+
+
 </resources>
