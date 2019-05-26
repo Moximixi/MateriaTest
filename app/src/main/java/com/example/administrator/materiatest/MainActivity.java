@@ -19,9 +19,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 import com.getbase.floatingactionbutton.*;
+import com.yzq.zxinglibrary.android.CaptureActivity;
+import com.yzq.zxinglibrary.common.Constant;
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawLayout;
+    private int REQUEST_CODE_SCAN = 111;
     final String[] items4 = new String[]{"标题", "作者", "出版社", "出版时间"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +100,12 @@ public class MainActivity extends AppCompatActivity {
         addbook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                try{
+                    Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+                    startActivityForResult(intent, REQUEST_CODE_SCAN);
+                }catch (SecurityException e){
+                    e.printStackTrace();
+                }
 
             }
         });
@@ -109,7 +117,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    //扫描返回结果
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+        // 扫描二维码/条码回传
+        if (requestCode == REQUEST_CODE_SCAN && resultCode == RESULT_OK) {
+            if (data != null) {
+                String content = data.getStringExtra(Constant.CODED_CONTENT);
+                Toast.makeText(MainActivity.this,"扫描结果为:"+content,Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
     //菜单
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.toolbar,menu);
