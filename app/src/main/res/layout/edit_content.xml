@@ -7,7 +7,9 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.administrator.materiatest.EditActivity"
-    tools:showIn="@layout/activity_edit">
+    tools:showIn="@layout/activity_edit"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <TextView
         android:layout_width="wrap_content"
@@ -32,144 +34,152 @@
 
     <ImageView
         android:id="@+id/edit_imageView"
-        android:layout_width="110dp"
-        android:layout_height="160dp"
+        android:layout_width="100dp"
+        android:layout_height="150dp"
         android:adjustViewBounds="true"
-        app:srcCompat="@mipmap/ic_launcher"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"/>
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="16dp"/>
 
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/edit_biaoti"
-        android:textSize="20dp"
-        android:layout_marginLeft="135dp"
+        android:textSize="18dp"
+        android:layout_marginLeft="120dp"
         android:layout_marginTop="16dp"
         />
 
     <EditText
         android:id="@+id/edit_biaoti"
-        android:layout_width="140dp"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="200dp"
+        android:layout_marginLeft="180dp"
         android:layout_marginTop="0dp"
-        android:layout_marginRight="20dp"
-        android:text="sadsad"
-        android:textSize="20dp"/>
+        android:layout_marginRight="18dp"
+        android:hint="标题"
+        android:textSize="18dp"
+        android:maxLines="1"
+      />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="135dp"
+        android:layout_marginLeft="120dp"
         android:layout_marginTop="52dp"
         android:text="@string/edit_zuoze"
-        android:textSize="20dp"
+        android:textSize="18dp"
         android:id="@+id/textView9"
         />
 
     <EditText
         android:id="@+id/edit_zuozhe"
-        android:layout_width="140dp"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="200dp"
+        android:layout_marginLeft="180dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="40dp"
-        android:text="sssss"
-        android:textSize="20dp"
-       />
+        android:hint="多个请用逗号隔开"
+        android:textSize="18dp"
+        android:maxLines="1"
+        />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="135dp"
+        android:layout_marginLeft="120dp"
         android:layout_marginTop="88dp"
         android:text="@string/edit_yizhe"
-        android:textSize="20dp"/>
+        android:textSize="18dp"/>
 
     <EditText
         android:id="@+id/edit_yizhe"
-        android:layout_width="140dp"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="200dp"
+        android:layout_marginLeft="180dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="76dp"
-        android:text="asdsad"
-        android:textSize="20dp"/>
+        android:hint="多个请用逗号隔开"
+        android:textSize="18dp"
+        android:maxLines="1"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="135dp"
+        android:layout_marginLeft="120dp"
         android:layout_marginTop="124dp"
         android:text="@string/edit_chuabnshe"
-        android:textSize="20dp"
-/>
+        android:textSize="18dp"/>
 
     <EditText
         android:id="@+id/edit_chubanshe"
-        android:layout_width="130dp"
+        android:layout_width="170dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="210dp"
+        android:layout_marginLeft="200dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="112dp"
-        android:text="asdsad"
-        android:textSize="20dp"/>
+        android:hint="出版社"
+        android:textSize="18dp"
+        android:maxLines="1"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="135dp"
+        android:layout_marginLeft="120dp"
         android:layout_marginTop="160dp"
         android:text="@string/edit_chubanshijian"
-        android:textSize="20dp"
+        android:textSize="18dp"
         android:id="@+id/textView10"/>
 
     <EditText
         android:id="@+id/edit_year"
-        android:layout_width="55dp"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="230dp"
+        android:layout_marginLeft="220dp"
         android:layout_marginTop="148dp"
-        android:text="2006"
-        android:textSize="20dp"/>
+        android:hint="年"
+        android:textSize="18dp"
+        android:maxLines="1"
+        android:gravity="center"/>
 
     <TextView
         android:layout_width="10dp"
         android:layout_height="wrap_content"
         android:text="-"
         android:textSize="20dp"
-        android:layout_marginLeft="290dp"
+        android:layout_marginLeft="280dp"
         android:layout_marginTop="160dp"/>
 
     <EditText
         android:id="@+id/edit_month"
-        android:layout_width="35dp"
+        android:layout_width="50dp"
         android:layout_height="wrap_content"
-        android:textSize="20dp"
-        android:text="06"
-        android:layout_marginLeft="300dp"
-        android:layout_marginTop="148dp"/>
+        android:textSize="18dp"
+        android:hint="月"
+        android:layout_marginLeft="290dp"
+        android:layout_marginTop="148dp"
+        android:gravity="center"
+        android:maxLines="1"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="135dp"
+        android:layout_marginLeft="120dp"
         android:layout_marginTop="196dp"
         android:text="@string/edit_ISBN"
-        android:textSize="20dp"
+        android:textSize="18dp"
         />
 
     <EditText
         android:id="@+id/edit_ISBN"
-        android:layout_width="140dp"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
-        android:textSize="20dp"
-        android:text="1321321"
-        android:layout_marginLeft="200dp"
-        android:layout_marginTop="185dp"/>
+        android:textSize="18dp"
+        android:text=""
+        android:layout_marginLeft="180dp"
+        android:layout_marginTop="185dp"
+        android:gravity="center"
+        android:maxLines="1"/>
 
     <Spinner
         android:id="@+id/edit_spinner_state"
@@ -214,6 +224,7 @@
         android:layout_below="@+id/hengxian"
         android:layout_marginTop="110dp"
         android:hint="@string/edit_biji"
+        android:maxLines="1"
         />
 
     <EditText
@@ -223,10 +234,11 @@
         android:layout_marginLeft="80dp"
         android:layout_below="@+id/hengxian"
         android:layout_marginTop="160dp"
-        android:text="@string/dialog_addTag"
+        android:hint="@string/dialog_addTag"
         android:textSize="20dp"
         android:focusable="false"
         android:textColor="@color/gray"
+        android:maxLines="1"
         />
 
     <EditText
@@ -236,8 +248,9 @@
         android:layout_marginLeft="80dp"
         android:layout_below="@id/hengxian"
         android:layout_marginTop="210dp"
-        android:text="asdas"
+        android:hint="网站"
         android:textSize="20dp"
+        android:maxLines="1"
   />
 
     <ImageView

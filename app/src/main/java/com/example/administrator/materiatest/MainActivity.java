@@ -1,10 +1,14 @@
 package com.example.administrator.materiatest;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -25,11 +29,29 @@ import com.yzq.zxinglibrary.common.Constant;
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawLayout;
     private int REQUEST_CODE_SCAN = 111;
+    private final int REQUEST_CODE_CAMEAR=200;
+    private final int REQUEST_CODE_INTERNET=201;
+    private final int REQUEST_CODE_ACCESS_NETWORK_STATE=202;
+    private final int REQUEST_CODE_EDITACTIVITY=233;
     final String[] items4 = new String[]{"标题", "作者", "出版社", "出版时间"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //申请相机权限
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.CAMERA},REQUEST_CODE_CAMEAR);
+        }
+        //申请网络权限
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.INTERNET)!= PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.INTERNET},REQUEST_CODE_INTERNET);
+        }
+        //申请网络状态权限
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_NETWORK_STATE)!= PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.ACCESS_NETWORK_STATE},REQUEST_CODE_ACCESS_NETWORK_STATE);
+        }
+
 
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -123,13 +145,28 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         // 扫描二维码/条码回传
-        if (requestCode == REQUEST_CODE_SCAN && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_CODE_SCAN){
+            if(resultCode == RESULT_OK) {
             if (data != null) {
                 String content = data.getStringExtra(Constant.CODED_CONTENT);
-                Toast.makeText(MainActivity.this,"扫描结果为:"+content,Toast.LENGTH_SHORT).show();
+                Intent intent=new Intent(MainActivity.this,EditActivity.class);
+                intent.putExtra("isInternet",true);
+                intent.putExtra("ISBN",content);
+                startActivityForResult(intent,REQUEST_CODE_EDITACTIVITY);
+                //Toast.makeText(MainActivity.this,"扫描结果为:"+content,Toast.LENGTH_SHORT).show();
+            }
+         }
+         else if(resultCode==408){
+                String content = data.getStringExtra(Constant.CODED_CONTENT);
+                Intent intent=new Intent(MainActivity.this,EditActivity.class);
+                intent.putExtra("isInternet",false);
+                intent.putExtra("ISBN",content);
+                startActivityForResult(intent,REQUEST_CODE_EDITACTIVITY);
             }
         }
     }
+
+
     //菜单
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.toolbar,menu);
@@ -169,6 +206,35 @@ public class MainActivity extends AppCompatActivity {
 
         }
         return true;
+    }
+
+
+    //重写权限的回调方法
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_CAMEAR:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //这里写操作 如send（）； send函数中New SendMsg （号码，内容）；
+                } else {
+                    Toast.makeText(this, "你没启动相机权限", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case REQUEST_CODE_INTERNET:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //这里写操作 如send（）； send函数中New SendMsg （号码，内容）；
+                } else {
+                    Toast.makeText(this, "你没启动网络权限", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case REQUEST_CODE_ACCESS_NETWORK_STATE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //这里写操作 如send（）； send函数中New SendMsg （号码，内容）；
+                } else {
+                    Toast.makeText(this, "你没启动网络状态权限", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+        }
     }
 
 }

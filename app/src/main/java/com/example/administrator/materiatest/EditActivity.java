@@ -3,6 +3,8 @@ package com.example.administrator.materiatest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -19,6 +21,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -34,8 +37,9 @@ import java.util.TreeSet;
 
 public class EditActivity extends AppCompatActivity {
     private Spinner spn_state,spn_shelf;
+    private ImageView mImageView;
     private List<String> shelf_list;
-    private EditText titel,writer,translator,publisher,time_year,time_month,ISBN,read_state,note,tag,website;
+    private EditText titel,author,translator,publisher,time_year,time_month,ISBN,note,tag,website;
     private ArrayList<String> tagList;
     private Set<String> tagSet;
     private boolean[] tag_state;
@@ -46,11 +50,28 @@ public class EditActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
+
+        titel=(EditText)findViewById(R.id.edit_biaoti);
+        author=(EditText)findViewById(R.id.edit_zuozhe);
+        translator=(EditText)findViewById(R.id.edit_yizhe);
+        publisher=(EditText)findViewById(R.id.edit_chubanshe);
+        time_year=(EditText)findViewById(R.id.edit_year);
+        time_month=(EditText)findViewById(R.id.edit_month);
+        ISBN=(EditText)findViewById(R.id.edit_ISBN);
+        note=(EditText)findViewById(R.id.edit_biji);
+        website=(EditText)findViewById(R.id.edit_wangzhi);
+        spn_state=(Spinner)findViewById(R.id.edit_spinner_state);
+        tag=(EditText)findViewById(R.id.edit_biaoqian);
+        spn_shelf=(Spinner)findViewById(R.id.edit_spinner_shelf);
+        mImageView=(ImageView)findViewById(R.id.edit_imageView);
+
+        //初始化编辑组件
+        init();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.edit_toolbar_name);
         toolbar.setNavigationIcon(R.drawable.imag_menu_close_clear_cancel);
-        spn_state=(Spinner)findViewById(R.id.edit_spinner_state);
         String[] str_state={"阅读状态未设置","未读","阅读中","已读"};
         ArrayAdapter<String> adapter_state=new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,str_state);
         adapter_state.setDropDownViewResource(R.layout.edit_spinner_textview);
@@ -68,7 +89,6 @@ public class EditActivity extends AppCompatActivity {
             }
         });
 
-        spn_shelf=(Spinner)findViewById(R.id.edit_spinner_shelf);
         shelf_list=new ArrayList<String>();
         shelf_list.add("默认书架");
         shelf_list.add("添加新书架");
@@ -154,7 +174,6 @@ public class EditActivity extends AppCompatActivity {
         tagSet=new TreeSet<String>();
 
          //tag标签
-        tag=(EditText)findViewById(R.id.edit_biaoqian);
         //监听事件
         tag.setOnClickListener(new View.OnClickListener() {
 
@@ -323,5 +342,44 @@ public class EditActivity extends AppCompatActivity {
     }
 
 
+    private void init(){
+        Boolean flag=getIntent().getBooleanExtra("isInternet",false);
+        String Isbn=getIntent().getStringExtra("ISBN");
+
+        if(flag) {
+
+            Handler handler = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    super.handleMessage(msg);
+                    switch (msg.what) {
+                        case 1: {
+                            //Toast.makeText(EditActivity.this,"下载成功",Toast.LENGTH_SHORT).show();
+                            Book book = (Book) msg.obj;
+                            titel.setText(book.getTitle());
+                            author.setText(book.getAuthor());
+                            translator.setText(book.getTranslator());
+                            publisher.setText(book.getPublisher());
+                            time_year.setText(book.getTime_Year());
+                            time_month.setText(book.getTime_Month());
+                            ISBN.setText(book.getISBN());
+                            website.setText(book.getWebsite());
+                            mImageView.setImageBitmap(book.getBitmap());
+
+                            break;
+                        }
+
+
+                    }
+                }
+            };
+            DataDownload data = new DataDownload();
+            data.scanResult(handler, Isbn);
+        }
+        else {
+            ISBN.setText(Isbn);
+        }
+
+    }
 
 }
