@@ -4,6 +4,11 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -21,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 import com.getbase.floatingactionbutton.*;
 import com.yzq.zxinglibrary.android.CaptureActivity;
@@ -162,6 +168,41 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("isInternet",false);
                 intent.putExtra("ISBN",content);
                 startActivityForResult(intent,REQUEST_CODE_EDITACTIVITY);
+            }
+        }
+
+        else if(requestCode==REQUEST_CODE_EDITACTIVITY){
+            if(resultCode==0){
+                //丢弃修改
+            }
+            else if(resultCode==1){
+                //TODO
+                //完成修改
+                //Toast.makeText(MainActivity.this,"12222", Toast.LENGTH_LONG).show();
+                SQLiteHelper myhelder=SQLiteHelper.getInstance(getApplicationContext());
+                SQLiteDatabase db=myhelder.getReadableDatabase();
+                Cursor cursor=db.query("BookShelf",null,null,null,null,null,null);
+                //判断游标是否为空
+                if(cursor.moveToFirst()) {
+                    while (cursor.moveToNext()) {
+                        String title = cursor.getString(cursor.getColumnIndex("title"));
+                        String author = cursor.getString(cursor.getColumnIndex("author"));
+                        byte[] bytes = cursor.getBlob(cursor.getColumnIndex("img_bitmap"));
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, null);
+                        ImageView imag=new ImageView(this);
+                        imag.setImageBitmap(bitmap);
+
+
+
+                        Toast to=Toast.makeText(MainActivity.this, title + author, Toast.LENGTH_SHORT);
+                        to.setView(imag);
+                        to.show();
+                    }
+                }
+                cursor.close();
+                db.close();
+                myhelder.close();
+
             }
         }
     }

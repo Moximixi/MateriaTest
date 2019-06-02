@@ -53,17 +53,21 @@ public class DataDownload {
                        // b=b.substring(b.indexOf("img1"),b.indexOf("jpg")+3);
                         //Log.d(TAG,"++++++++++ "+b);
 
-                        StringBuffer bitmap_website = new StringBuffer().append("http://").append(bf.substring(bf.indexOf("img1"), bf.indexOf("jpg") + 3));
+                        if(bf.indexOf("http://img")!=-1 && bf.indexOf("http://img")<bf.indexOf("jpg") + 3)
+                        {
+                            StringBuffer bitmap_website = new StringBuffer().append(bf.substring(bf.indexOf("http://img"), bf.indexOf("jpg") + 3));
 
-                        inputStream.close();
 
-                        //下载图片
-                        InputStream bitmapStream=download(bitmap_website.toString());
-                        if(bitmapStream!=null){
-                            Bitmap bitmap= BitmapFactory.decodeStream(bitmapStream);
-                            book.setBitmap(bitmap);
+                            inputStream.close();
+
+                            //下载图片
+                            InputStream bitmapStream = download(bitmap_website.toString());
+                            if (bitmapStream != null) {
+                                Bitmap bitmap = BitmapFactory.decodeStream(bitmapStream);
+                                book.setBitmap(bitmap);
+                            }
+                            bitmapStream.close();
                         }
-                         bitmapStream.close();
 
                     }
 
@@ -145,6 +149,9 @@ public class DataDownload {
                                 }
                                 book.setTime_Month(s);
                             }
+                        }
+                        else if(xmlPullParser.getName().equals("id")){
+                            book.setWebsite(xmlPullParser.nextText());
                         }
 
 

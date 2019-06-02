@@ -1,7 +1,12 @@
 package com.example.administrator.materiatest;
 
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -10,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,11 +35,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+
+import static android.content.ContentValues.TAG;
 
 public class EditActivity extends AppCompatActivity {
     private Spinner spn_state,spn_shelf;
@@ -44,6 +53,12 @@ public class EditActivity extends AppCompatActivity {
     private Set<String> tagSet;
     private boolean[] tag_state;
     private String[] tagArray;
+    //数据库相关
+    private SQLiteHelper myhelper;
+    private SQLiteDatabase db;
+    private Cursor cursor;
+
+    private Book book=null;
 
 
     @Override
@@ -310,7 +325,37 @@ public class EditActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            startActivity(new Intent(EditActivity.this,MainActivity.class));
+           //Toast.makeText(EditActivity.this,"sadasad",Toast.LENGTH_SHORT).show();
+            //数据库操作
+
+            myhelper=SQLiteHelper.getInstance(getApplicationContext());
+            db=myhelper.getWritableDatabase();
+
+            ContentValues values = new ContentValues();
+            values.put("ISBN",ISBN.getText().toString());
+            values.put("title",titel.getText().toString());
+            values.put("author",author.getText().toString());
+            values.put("translator",translator.getText().toString());
+            values.put("publisher",publisher.getText().toString());
+            values.put("time_year",time_year.getText().toString());
+            values.put("time_month",time_month.getText().toString());
+            values.put("read_state",spn_state.toString());
+            values.put("book_shelf",spn_shelf.toString());
+            values.put("note",note.getText().toString());
+            values.put("tag",tag.getText().toString());
+            values.put("website",website.getText().toString());
+
+            byte[] bitmap_byte = bitmapToBytes(book.getBitmap());
+            values.put("img_bitmap",bitmap_byte);
+
+            db.insert("BookShelf",null,values);
+            db.close();
+            myhelper.close();
+
+            setResult(1);
+            finish();
+
+            //startActivity(new Intent(EditActivity.this,MainActivity.class));
             return true;
         }
         else if(id==android.R.id.home){
@@ -322,7 +367,9 @@ public class EditActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialog, int which) {
                     //TODO
                     // 保存数据
-                      startActivity(new Intent(EditActivity.this,MainActivity.class));
+                      setResult(0);
+                      finish();
+                    //startActivity(new Intent(EditActivity.this,MainActivity.class));
                 }
             });
 
@@ -342,6 +389,17 @@ public class EditActivity extends AppCompatActivity {
     }
 
 
+    private static byte[] bitmapToBytes(Bitmap bitmap){
+        if (bitmap == null) {
+            return null;
+        }
+        final ByteArrayOutputStream os = new ByteArrayOutputStream();
+        // 将Bitmap压缩成PNG编码，质量为100%存储
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);//除了PNG还有很多常见格式，如jpeg等。
+        return os.toByteArray();
+    }
+
+
     private void init(){
         Boolean flag=getIntent().getBooleanExtra("isInternet",false);
         String Isbn=getIntent().getStringExtra("ISBN");
@@ -355,7 +413,7 @@ public class EditActivity extends AppCompatActivity {
                     switch (msg.what) {
                         case 1: {
                             //Toast.makeText(EditActivity.this,"下载成功",Toast.LENGTH_SHORT).show();
-                            Book book = (Book) msg.obj;
+                            book = (Book) msg.obj;
                             titel.setText(book.getTitle());
                             author.setText(book.getAuthor());
                             translator.setText(book.getTranslator());
