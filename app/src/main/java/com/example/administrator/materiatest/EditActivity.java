@@ -86,7 +86,7 @@ public class EditActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.edit_toolbar_name);
-        toolbar.setNavigationIcon(R.drawable.imag_menu_close_clear_cancel);
+        toolbar.setNavigationIcon(R.drawable.edit_img_cancel);
         String[] str_state={"阅读状态未设置","未读","阅读中","已读"};
         ArrayAdapter<String> adapter_state=new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,str_state);
         adapter_state.setDropDownViewResource(R.layout.edit_spinner_textview);

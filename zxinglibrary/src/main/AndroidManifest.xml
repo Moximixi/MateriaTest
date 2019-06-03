@@ -18,6 +18,7 @@
     <application>
         <activity
             android:name=".android.CaptureActivity"
+            android:label="扫描条形码"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />

@@ -169,6 +169,14 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("ISBN",content);
                 startActivityForResult(intent,REQUEST_CODE_EDITACTIVITY);
             }
+            else if(resultCode==407){
+                String content = data.getStringExtra(Constant.CODED_CONTENT);
+                Intent intent=new Intent(MainActivity.this,EditActivity.class);
+                intent.putExtra("isInternet",false);
+                intent.putExtra("ISBN",content);
+                startActivityForResult(intent,REQUEST_CODE_EDITACTIVITY);
+            }
+
         }
 
         else if(requestCode==REQUEST_CODE_EDITACTIVITY){

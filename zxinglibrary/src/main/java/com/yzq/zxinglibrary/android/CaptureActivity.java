@@ -1,6 +1,5 @@
 package com.yzq.zxinglibrary.android;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,16 +12,27 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.view.GravityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.LinearLayoutCompat;
+import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,6 +73,9 @@ public class CaptureActivity extends AppCompatActivity implements SurfaceHolder.
     private CameraManager cameraManager;
     private CaptureActivityHandler handler;
     private SurfaceHolder surfaceHolder;
+
+    //自己写的代码
+    private static Boolean flash_state=true;
 
 
     public ViewfinderView getViewfinderView() {
@@ -110,10 +123,18 @@ public class CaptureActivity extends AppCompatActivity implements SurfaceHolder.
         }
 
 
-        setContentView(R.layout.activity_capture);
+        setContentView(R.layout.activity_capture_add);
 
 
         initView();
+
+        //自己写的代码
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitle("扫描条形码");
+        toolbar.setNavigationIcon(R.drawable.caputer_return);
+
+
 
         hasSurface = false;
 
@@ -134,8 +155,8 @@ public class CaptureActivity extends AppCompatActivity implements SurfaceHolder.
         viewfinderView.setZxingConfig(config);
 
 
-        backIv = (AppCompatImageView) findViewById(R.id.backIv);
-        backIv.setOnClickListener(this);
+        //backIv = (AppCompatImageView) findViewById(R.id.backIv);
+        //backIv.setOnClickListener(this);
 
         flashLightIv = (AppCompatImageView) findViewById(R.id.flashLightIv);
         flashLightTv = (TextView) findViewById(R.id.flashLightTv);
@@ -161,6 +182,98 @@ public class CaptureActivity extends AppCompatActivity implements SurfaceHolder.
 
     }
 
+
+    //自己写的代码（顶部菜单）
+    //菜单
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.caputer_setting,menu);
+        return true;
+    }
+
+    //自己写的代码（顶部菜单点击）
+    @Override  //顶部菜单的
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId()==R.id.menu_flash){
+            if(flash_state) {
+                item.setIcon(R.drawable.falsh_close);
+                flash_state=false;
+            }
+            else {
+                item.setIcon(R.drawable.falsh_open);
+                flash_state=true;
+            }
+            cameraManager.switchFlashLight(handler);
+        }
+        else if(item.getItemId()==android.R.id.home){
+            finish();
+        }
+        else if(item.getItemId()==R.id.menu_write){
+            initDialog();
+        }
+        else if(item.getItemId()==R.id.action_add){
+            Intent intent = getIntent();
+            intent.putExtra(Constant.CODED_CONTENT, "");
+            setResult(407, intent);
+            CaptureActivity.this.finish();
+        }
+
+        return true;
+    }
+
+
+
+    public void initDialog(){
+        final EditText et = new EditText(this);
+        AlertDialog.Builder dialog=new AlertDialog.Builder(new ContextThemeWrapper(CaptureActivity.this, R.style.AlertDialogCustom) );
+        dialog.setTitle("手动添加");
+        dialog.setMessage("请输入书籍的ISBN码（13位数字）");
+        dialog.setView(et);
+        dialog.setPositiveButton("添加", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                initDownload(et.getText().toString());
+            }
+        });
+
+        dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //TODO
+            }
+        });
+
+        AlertDialog alertDialog=dialog.create();
+        alertDialog.show();
+
+
+        final Button post_button1=alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        post_button1.setEnabled(false);
+        //设置editText的监听事件
+        et.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(s.length()!=13){
+                    post_button1.setEnabled(false);
+
+                }
+                else {
+                    post_button1.setEnabled(true);
+
+                }
+            }
+
+        });
+    }
 
     /**
      * @param pm
@@ -188,6 +301,7 @@ public class CaptureActivity extends AppCompatActivity implements SurfaceHolder.
         if (flashState == Constant.FLASH_OPEN) {
             flashLightIv.setImageResource(R.drawable.ic_open);
             flashLightTv.setText("关闭闪光灯");
+
         } else {
             flashLightIv.setImageResource(R.drawable.ic_close);
             flashLightTv.setText("打开闪光灯");
