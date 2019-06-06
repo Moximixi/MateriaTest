@@ -8,6 +8,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -15,6 +17,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -22,24 +25,47 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Toast;
 import com.getbase.floatingactionbutton.*;
 import com.yzq.zxinglibrary.android.CaptureActivity;
 import com.yzq.zxinglibrary.common.Constant;
 
+import java.text.Collator;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
-    private DrawerLayout mDrawLayout;
+
     private int REQUEST_CODE_SCAN = 111;
     private final int REQUEST_CODE_CAMEAR=200;
     private final int REQUEST_CODE_INTERNET=201;
     private final int REQUEST_CODE_ACCESS_NETWORK_STATE=202;
     private final int REQUEST_CODE_EDITACTIVITY=233;
     final String[] items4 = new String[]{"标题", "作者", "出版社", "出版时间"};
+
+    public static List<Book> bookList=new ArrayList<>();  //设置成public static方便点
+    private ListView listView;  //主页显示的书
+    private BookAdapter adapter;  //listview适配器
+    private SQLiteHelper myhelder;  //数据库用来加载书
+    private SQLiteDatabase db;
+
+    private DrawerLayout mDrawLayout;  //测拉栏
+
+    private MenuItem searchItem;  //顶部菜单栏的搜索控件
+    private SearchView searchView ;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,22 +84,34 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.ACCESS_NETWORK_STATE},REQUEST_CODE_ACCESS_NETWORK_STATE);
         }
 
-
+        //顶部的toolbar
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
+        //侧拉栏
         mDrawLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         ActionBar actionBar = getSupportActionBar();
-
+        //侧拉栏的布局
         NavigationView navigationView=(NavigationView)findViewById(R.id.nav_view);
+
+        //listview的适配器
+        adapter=new BookAdapter(MainActivity.this,R.layout.book_item,
+                bookList);
+        listView=(ListView)findViewById(R.id.list_view);
+        listView.setAdapter(adapter);
+        /*
+        这是个辅助函数,详细见MainActivity的最后一个函数
+        作用是把数据库中的书添加到arraylist中并且显示在主页面
+         */
+        show();
 
 
        if(actionBar!=null){
            actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         }
-        //测拉菜单的
+        //测拉菜单的各种按钮逻辑
+        //加标签，搜索，设置页面，关于页面。
         navigationView.setCheckedItem(R.id.nav_book);
         navigationView.setNavigationItemSelectedListener(new NavigationView.
                 OnNavigationItemSelectedListener(){
@@ -106,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
                         });
                         break;
                     case R.id.nav_search:
-                           // onSearchRequested();
+                        searchItem.expandActionView();//直接把搜索栏目展开就好了
                         break;
                     case R.id.nav_setting:
                         Intent intent=new Intent(MainActivity.this,SettingActivity.class);
@@ -142,6 +180,15 @@ public class MainActivity extends AppCompatActivity {
         massaddition.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+            }
+        });
+
+        //这是listview中点击某一本书之后的操作，添加在这里
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+             //   Toast.makeText(MainActivity.this,"ghij",Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -186,61 +233,126 @@ public class MainActivity extends AppCompatActivity {
             else if(resultCode==1){
                 //TODO
                 //完成修改
-                //Toast.makeText(MainActivity.this,"12222", Toast.LENGTH_LONG).show();
-                SQLiteHelper myhelder=SQLiteHelper.getInstance(getApplicationContext());
-                SQLiteDatabase db=myhelder.getReadableDatabase();
-                Cursor cursor=db.query("BookShelf",null,null,null,null,null,null);
-                //判断游标是否为空
-                if(cursor.moveToFirst()) {
-                    while (cursor.moveToNext()) {
-                        String title = cursor.getString(cursor.getColumnIndex("title"));
-                        String author = cursor.getString(cursor.getColumnIndex("author"));
-                        byte[] bytes = cursor.getBlob(cursor.getColumnIndex("img_bitmap"));
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, null);
-                        ImageView imag=new ImageView(this);
-                        imag.setImageBitmap(bitmap);
-
-
-
-                        Toast to=Toast.makeText(MainActivity.this, title + author, Toast.LENGTH_SHORT);
-                        to.setView(imag);
-                        to.show();
-                    }
-                }
-                cursor.close();
-                db.close();
-                myhelder.close();
-
+                adapter.notifyDataSetChanged();
             }
         }
     }
 
-
-    //菜单
+    //菜单,包括搜索栏serachview的监听事件
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.toolbar,menu);
+        searchItem = menu.findItem(R.id.menu_search);
+        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+
+        MenuItemCompat.setOnActionExpandListener(searchItem,new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {return true;}
+            //点击左侧的返回键的时候要回到原来的界面，这里是重新绑定了原来的适配器和bookList。然后重新显示
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                adapter=new BookAdapter(MainActivity.this,R.layout.book_item,
+                        bookList);
+                listView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+                return true;
+            }
+        });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            //根据输入框的关键字来检索出书籍，就是根据关键字匹配，然后重新用一个bookList和adapter绑定，显示
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                List<Book> tmp=new ArrayList<>();
+                BookAdapter tmpAdapter=new BookAdapter(MainActivity.this,R.layout.book_item,
+                        tmp);
+                listView.setAdapter(tmpAdapter);
+                for(Book book:bookList)
+                    if(book.getTitle().contains(query))
+                        tmp.add(book);
+
+                tmpAdapter.notifyDataSetChanged();
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
         return true;
     }
-    @Override  //顶部菜单的
+
+    @Override  //顶部菜单的各个控件的函数
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch(item.getItemId()){
             case android.R.id.home:
                 mDrawLayout.openDrawer(GravityCompat.START);
                 break;
             case R.id.menu_more:
                 final AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+                final int index[]={-1};
                 alertDialog.setTitle("排序依据")
                         .setSingleChoiceItems(items4, 0, new DialogInterface.OnClickListener() {
                                     @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                       //处理点击排序之后的各种逻辑
-                                    }
-                                }
-                        )
+                                    public void onClick(DialogInterface dialog, int which) {index[0]=which;}
+                        })
                         .setPositiveButton("排序", new DialogInterface.OnClickListener() {
+                            final Collator myCollator = Collator.getInstance(java.util.Locale.CHINA);
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                //处理点击排序之后的各种逻辑
+                                if(index[0]==-1)index[0]=0;  //默认是按照标题排序的
+                                switch(index[0]){
+                                    case 0:
+                                        //按标题
+                                        Comparator<Book> BookComparatorBytitle = new Comparator<Book>() {
+                                            @Override
+                                            public int compare(Book o1, Book o2) {
+                                                if(myCollator.compare(o1.getTitle(),o2.getTitle())>0)return 1;
+                                                else return -1;
+                                            }
+                                        };
+                                        Collections.sort(bookList, BookComparatorBytitle);
+                                        break;
+                                    case 1:
+                                        //按作者
+                                        Comparator<Book> BookComparatorByauthor = new Comparator<Book>() {
+                                            @Override
+                                            public int compare(Book o1, Book o2) {
+                                                if(myCollator.compare(o1.getAuthor(),o2.getAuthor())>0)return 1;
+                                                else return -1;
+                                            }
+                                        };
+                                        Collections.sort(bookList, BookComparatorByauthor);
+                                        break;
+                                    case 2:
+                                        //按出版社
+                                        Comparator<Book> BookComparatorBypublisher = new Comparator<Book>() {
+                                            @Override
+                                            public int compare(Book o1, Book o2) {
+                                                if(myCollator.compare(o1.getPublisher(),o2.getPublisher())>0)return 1;
+                                                else return -1;
+                                            }
+                                        };
+                                        Collections.sort(bookList, BookComparatorBypublisher);
+                                        break;
+                                    case 3:
+                                        //按出版时间
+                                        Comparator<Book> BookComparatorBytime = new Comparator<Book>() {
+                                            @Override
+                                            public int compare(Book o1, Book o2) {
+                                                if(myCollator.compare(o1.getTime_Year(),o2.getTime_Year())>0)return 1;
+                                                else if(myCollator.compare(o1.getTime_Year(),o2.getTime_Year())<0)return -1;
+                                                else if(myCollator.compare(o1.getTime_Month(),o2.getTime_Month())>0)return 1;
+                                                else if(myCollator.compare(o1.getTime_Month(),o2.getTime_Month())<0)return -1;
+                                                else return 0;
+                                            }
+                                        };
+                                        Collections.sort(bookList, BookComparatorBytime);
+                                        break;
+                                }
                                 dialog.dismiss();
+                                adapter.notifyDataSetChanged();
+                                index[0]=-1;
                             }
                         })
                         .create().show();
@@ -256,7 +368,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
     }
-
 
     //重写权限的回调方法
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -286,4 +397,57 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /*
+    这是一个辅助函数。功能：打开数据库，将所有的书取出添加到bookList中，
+    并显示到主页面上
+     */
+    public void show(){
+        myhelder=SQLiteHelper.getInstance(getApplicationContext());
+        db=myhelder.getReadableDatabase();
+        //获得游标
+        Cursor cursor=db.query("BookShelf",null,null,null,null,null,null);
+        //判断游标是否为空
+        if(cursor.moveToFirst()) {
+            while (cursor.moveToNext()) {
+                String isbn=cursor.getString(cursor.getColumnIndex("ISBN"));
+                String title = cursor.getString(cursor.getColumnIndex("title"));
+                String author = cursor.getString(cursor.getColumnIndex("author"));
+                String publisher = cursor.getString(cursor.getColumnIndex("publisher"));
+                String time_year = cursor.getString(cursor.getColumnIndex("time_year"));
+                String time_month = cursor.getString(cursor.getColumnIndex("time_month"));
+                //避免显示重复数据
+                Boolean flag=true;
+                for(Book book:bookList){
+                    if(book.getISBN().equals(isbn)){
+                        flag=false;
+                        break;
+                    }
+                }
+                if(flag==false)continue;
+
+                byte[] bytes = cursor.getBlob(cursor.getColumnIndex("img_bitmap"));
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, null);
+                //构造函数会将图片的格式统一
+                bookList.add(new Book(title,author,publisher,time_year,time_month,bitmap));
+            }
+        }
+        cursor.close();
+        db.close();
+        myhelder.close();
+        //默认按照标题排序
+        final Collator myCollator = Collator.getInstance(java.util.Locale.CHINA);
+        Comparator<Book> BookComparatorBytitle = new Comparator<Book>() {
+            @Override
+            public int compare(Book o1, Book o2) {
+                if(myCollator.compare(o1.getTitle(),o2.getTitle())>0)return 1;
+                else return -1;
+            }
+        };
+        Collections.sort(bookList, BookComparatorBytitle);
+        adapter.notifyDataSetChanged();
+
+    }
+
 }
+
+

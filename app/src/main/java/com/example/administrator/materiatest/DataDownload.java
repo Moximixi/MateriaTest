@@ -133,8 +133,8 @@ public class DataDownload {
                                 book.setAuthor(xmlPullParser.nextText());
                             else if (xmlPullParser.getAttributeValue(0).equals("translator"))
                                 book.setTranslator(xmlPullParser.nextText());
-                            else if (xmlPullParser.getAttributeValue(0).equals("author"))
-                                book.setAuthor(xmlPullParser.nextText());
+                            else if (xmlPullParser.getAttributeValue(0).equals("publisher"))  //!!!
+                                book.setPublisher(xmlPullParser.nextText());
                             else if (xmlPullParser.getAttributeValue(0).equals("pubdate")){
                                 String s=xmlPullParser.nextText();
                                 book.setTime_Year(s.substring(0,4));

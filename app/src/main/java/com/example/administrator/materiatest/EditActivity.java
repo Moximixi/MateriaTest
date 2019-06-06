@@ -325,7 +325,7 @@ public class EditActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-           //Toast.makeText(EditActivity.this,"sadasad",Toast.LENGTH_SHORT).show();
+          // Toast.makeText(EditActivity.this,"aaaaaa",Toast.LENGTH_LONG).show();
             //数据库操作
 
             myhelper=SQLiteHelper.getInstance(getApplicationContext());
@@ -352,9 +352,25 @@ public class EditActivity extends AppCompatActivity {
             db.close();
             myhelper.close();
 
-            setResult(1);
+            //顺便添加到bookList中
+            //注意不重复添加
+            Boolean flag=true;
+            for(Book tmp:MainActivity.bookList){
+                if(tmp.getISBN().equals(book.getISBN())){
+                    flag=false;
+                    break;
+                }
+            }
+            if(flag==true){
+                MainActivity.bookList.add(new Book(titel.getText().toString(),
+                        author.getText().toString(),
+                        publisher.getText().toString(),
+                        book.getTime_Year(),
+                        book.getTime_Month(),
+                        book.getBitmap()));
+                setResult(1);//回调到mainactivity中把主页面更新了
+            }
             finish();
-
             //startActivity(new Intent(EditActivity.this,MainActivity.class));
             return true;
         }
