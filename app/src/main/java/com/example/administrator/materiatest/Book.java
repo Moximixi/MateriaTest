@@ -36,7 +36,7 @@ public class Book implements Serializable {
     private UUID bookshelfID;
     private String notes;
     private String website;
-    private List<UUID> labelID;
+    private List<Integer> labelID;
 
     public Book() {
         this(UUID.randomUUID());
@@ -182,7 +182,7 @@ public class Book implements Serializable {
         this.website = website;
     }
 
-    public List<UUID> getLabelID() {
+    public List<Integer> getLabelID() {
         return labelID;
     }
 
@@ -195,7 +195,7 @@ public class Book implements Serializable {
         }
     }
 
-    public void addLabel(UUID labelID) {
+    public void addLabel(int labelID) {
         if (this.labelID == null) {
             this.labelID = new ArrayList<>();
         }
@@ -204,7 +204,7 @@ public class Book implements Serializable {
         }
     }
 
-    public void removeLabel(UUID labelID) {
+    public void removeLabel(int labelID) {
         if (this.labelID != null) {
             this.labelID.remove(labelID);
         }
@@ -217,7 +217,7 @@ public class Book implements Serializable {
     }
 
 
-    public void setLabelID(List<UUID> labelID) {
+    public void setLabelID(List<Integer> labelID) {
         this.labelID = labelID;
     }
 

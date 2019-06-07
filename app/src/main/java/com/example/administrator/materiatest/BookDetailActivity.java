@@ -277,10 +277,10 @@ public class BookDetailActivity extends AppCompatActivity {
             notesRelativeLayout.setVisibility(View.GONE);
         }
 
-        List<UUID> labelID = book.getLabelID();
+        List<Integer> labelID = book.getLabelID();
         if (labelID.size() != 0) {
             StringBuilder labelsTitle = new StringBuilder();
-            for (UUID id : labelID) {
+            for (int id : labelID) {
                 //labelsTitle.append(LabelLab.get(this).getLabel(id).getTitle());
                 labelsTitle.append(",");
             }

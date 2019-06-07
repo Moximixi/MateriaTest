@@ -125,18 +125,18 @@ public class BookLab {
      * @param labelID
      * @return result
      */
-    public List<Book> getBooks(@Nullable UUID bookShelfID, @Nullable UUID labelID) {
+    public List<Book> getBooks(@Nullable UUID bookShelfID, @Nullable int labelID) {
         List<Book> mBooks = new ArrayList<>();
         String whereClause;
         String[] whereArgs;
-        if (bookShelfID == null && labelID == null) {
+        if (bookShelfID == null && labelID == 0) {
             return getBooks();
         } else if (bookShelfID == null) {
             // bookShelfID == null and labelID != null
             whereClause = BookDBSchema.BookTable.Cols.LABEL_ID + " GLOB ?";
-            whereArgs = new String[]{"*" + labelID.toString() + "*"};
+            whereArgs = new String[]{"*" + labelID + "*"};
             // It is WRONG to write ... + "GLOB *?*",new String[](labelID.toString())
-        } else if (labelID == null) {
+        } else if (labelID == 0) {
             // bookShelfID != null and labelID == null
             whereClause = BookDBSchema.BookTable.Cols.BOOKSHELF_ID + "= ?";
             whereArgs = new String[]{bookShelfID.toString()};
@@ -144,7 +144,7 @@ public class BookLab {
             // bookShelfID != null and labelID != null
             whereClause = BookDBSchema.BookTable.Cols.BOOKSHELF_ID + "= ? AND "
                     + BookDBSchema.BookTable.Cols.LABEL_ID + " GLOB ?";
-            whereArgs = new String[]{bookShelfID.toString(), "*" + labelID.toString() + "*"};
+            whereArgs = new String[]{bookShelfID.toString(), "*" + labelID + "*"};
         }
 
         BookCursorWrapper cursor = queryBooks(whereClause, whereArgs);
@@ -171,7 +171,7 @@ public class BookLab {
         String whereClause;
         String[] whereArgs;
         if (keyword == null) {
-            return getBooks(bookshelfID, null);
+            return getBooks(bookshelfID, 0);
         }
         // in sql, "GLOB" is case-sensitive while "LIKE" is case-insensitive
         if (bookshelfID == null) {

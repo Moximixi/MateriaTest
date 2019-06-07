@@ -65,7 +65,7 @@ public class BookCursorWrapper extends CursorWrapper {
         String labelIDJson = getString(getColumnIndex(BookDBSchema.BookTable.Cols.LABEL_ID));
         Type typeUUID = new TypeToken<List<UUID>>() {
         }.getType();
-        List<UUID> labelID = gson.fromJson(labelIDJson, typeUUID);
+        List<Integer> labelID = gson.fromJson(labelIDJson, typeUUID);
         //
         //above finish reading from database, then set book
         Book book = new Book(UUID.fromString(uuid));

@@ -1,18 +1,12 @@
 package com.example.administrator.materiatest;
 
-
-import java.util.UUID;
-
 public class Label {
-    private UUID id;
+    private int id;
     private String title;
-
+    static int range=2;
     public Label() {
-        id = UUID.randomUUID();
-    }
-
-    public Label(UUID uuid) {
-        id = uuid;
+        id=range;
+        range++;
     }
 
     @Override
@@ -20,7 +14,7 @@ public class Label {
         return title;
     }
 
-    public UUID getId() {
+    public int getId() {
         return id;
     }
 
@@ -38,12 +32,7 @@ public class Label {
             return false;
         }
         Label book = (Label) o;
-        return book.getId().equals(id);
-    }
-
-    @Override
-    public int hashCode() {
-        return id.hashCode();
+        return book.getId()==id;
     }
 
 

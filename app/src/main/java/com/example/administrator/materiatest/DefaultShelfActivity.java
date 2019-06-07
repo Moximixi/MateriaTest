@@ -34,8 +34,6 @@ public class DefaultShelfActivity extends AppCompatActivity {
 
         NavigationView navigationView=(NavigationView)findViewById(R.id.nav_view);
 
-
-
         if(actionBar!=null){
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
@@ -48,7 +46,7 @@ public class DefaultShelfActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(MenuItem item) {
                 mDrawLayout.closeDrawers();
                 switch(item.getItemId()){
-                    case R.id.nav_add:
+                    /*case R.id.nav_add:
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(DefaultShelfActivity.this);
                         View view1 = View.inflate(DefaultShelfActivity.this, R.layout.add_layout, null);
                         Button calcle=(Button)view1.findViewById(R.id.add_button_cancle);
@@ -82,7 +80,7 @@ public class DefaultShelfActivity extends AppCompatActivity {
                     case R.id.nav_about:
                         Intent intent2=new Intent(DefaultShelfActivity.this,AboutActivity.class);
                         startActivity(intent2);
-                        break;
+                        break;*/
                     default:
                 }
                 return true;

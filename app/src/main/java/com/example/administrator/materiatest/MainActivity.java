@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     final String[] items4 = new String[]{"标题", "作者", "出版社", "出版时间"};
     EditText temp_tagText;
     public NavigationView navigationView;
-    public ListView nav_labels_lv;
+    public SubMenu addLabel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,10 +50,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         mDrawLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
-        ActionBar actionBar = getSupportActionBar();
+        final ActionBar actionBar = getSupportActionBar();
 
         navigationView=(NavigationView)findViewById(R.id.nav_view);
-        nav_labels_lv=(ListView)findViewById(R.id.label_holder);
 
        if(actionBar!=null){
            actionBar.setDisplayHomeAsUpEnabled(true);
@@ -65,14 +64,16 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setCheckedItem(R.id.nav_book);
 
         final List<Label> labels = LabelLab.get(this).getLabels();
+        Menu menu=navigationView.getMenu();
+        //动态添加菜单选项
+        addLabel=menu.addSubMenu(1,0,0,"标签");
+        addLabel.add(1,1,1,"添加新标签").setIcon(R.drawable.add);
+        menu.add(2,1,0,"设置").setIcon(R.drawable.setting);
+        menu.add(2,2,0,"关于").setIcon(R.drawable.about);
+        //动态显示标签
         for (int i = 0; i < labels.size(); i++) {
-            // add labels
-            IDrawerItem drawerItem = new PrimaryDrawerItem()
-                    .withName(labels.get(i).getTitle())
-                    .withIcon(R.drawable.ic_label)
-                    .withIdentifier(i + 10)// identifier begin from 10
-                    .withCheckable(true);
-            //mDrawer.addItemAtPosition(drawerItem, i + 4);
+            Label label=labels.get(i);
+            addLabel.add(1,(int)label.getId(),1,label.getTitle()).setIcon(R.drawable.ic_label);
         }
 
 
@@ -82,8 +83,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
                 mDrawLayout.closeDrawers();
-                switch(item.getItemId()){
-                    case R.id.nav_add:
+                //标签
+                if(item.getGroupId()==1){
+                    //添加标签的按钮
+                    if(item.getItemId()==1){
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
                         View view1 = View.inflate(MainActivity.this, R.layout.add_layout, null);
                         Button calcle=(Button)view1.findViewById(R.id.add_button_cancle);
@@ -103,27 +106,40 @@ public class MainActivity extends AppCompatActivity {
                         commit.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Label addLabel=new Label();
-                                String newLabel=temp_tagText.getText().toString();
-                                addLabel.setTitle(newLabel);
-                                LabelLab.get(MainActivity.this).addLabel(addLabel);
-                                navigationView.getMenu().add(2,2,2,newLabel);
+                                Label newLabel=new Label();
+                                String str=temp_tagText.getText().toString();
+                                newLabel.setTitle(str);
+                                addNewLabel(newLabel);
                                 show.dismiss();
                             }
                         });
-                        break;
+                    }
+                    //点击标签
+                    else if(item.getItemId()>1){
+                        getLabelBook(item.getItemId());
+                    }
+                }
+
+                if(item.getGroupId()==2){
+                    switch(item.getItemId()){
+                        case 1: //设置
+                            Intent intent=new Intent(MainActivity.this,SettingActivity.class);
+                            startActivity(intent);
+                            break;
+                        case 2://关于
+                            Intent intent2=new Intent(MainActivity.this,AboutActivity.class);
+                            startActivity(intent2);
+                            break;
+                            default:
+                                break;
+                    }
+                }
+                switch(item.getItemId()){
                     case R.id.nav_search:
                            // onSearchRequested();
                         break;
-                    case R.id.nav_setting:
-                        Intent intent=new Intent(MainActivity.this,SettingActivity.class);
-                        startActivity(intent);
-                        break;
-                    case R.id.nav_about:
-                        Intent intent2=new Intent(MainActivity.this,AboutActivity.class);
-                        startActivity(intent2);
-                        break;
                     default:
+                        break;
                 }
                 return true;
            }
@@ -156,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override  //顶部菜单的
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch(item.getItemId()){
             case android.R.id.home:
                 mDrawLayout.openDrawer(GravityCompat.START);
@@ -190,6 +207,13 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    private void addNewLabel(Label label){
+        LabelLab.get(MainActivity.this).addLabel(label);
+        addLabel.add(1,label.getId(),1,label.getTitle()).setIcon(R.drawable.ic_label);
+    }
 
+    //获取标签对应的书籍并且显示
+    private void getLabelBook(int id){
 
+    }
 }

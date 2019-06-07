@@ -10,7 +10,6 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class LabelLab {
     private static final String TAG = "LabelLab";
@@ -51,10 +50,10 @@ public class LabelLab {
         return loadLabel();
     }
 
-    public final Label getLabel(UUID id) {
+    public final Label getLabel(int id) {
         List<Label> labels = loadLabel();
         for (Label label : labels) {
-            if (label.getId().equals(id)) {
+            if (label.getId()==id) {
                 return label;
             }
         }
@@ -77,7 +76,7 @@ public class LabelLab {
                 .apply();
     }
 
-    public void deleteLabel(UUID id, boolean removeFromBooks) {
+    public void deleteLabel(int id, boolean removeFromBooks) {
         List<Label> sLabel = loadLabel();
         if (removeFromBooks) {
             List<Book> books = BookLab.get(mContext).getBooks(null, id);
@@ -87,7 +86,7 @@ public class LabelLab {
             }
         }
         for (Label label : sLabel) {
-            if (label.getId().equals(id)) {
+            if (label.getId()==id) {
                 sLabel.remove(label);
                 break;
             }
@@ -95,10 +94,10 @@ public class LabelLab {
         saveLabel(sLabel);
     }
 
-    public void renameLabel(UUID id, String newName) {
+    public void renameLabel(int id, String newName) {
         List<Label> labels = loadLabel();
         for (Label label : labels) {
-            if (label.getId().equals(id)) {
+            if (label.getId()==id) {
                 label.setTitle(newName);
                 break;
             }
@@ -107,5 +106,11 @@ public class LabelLab {
 
     }
 
+    public void clearLabel(){
+        List<Label> sLabel = loadLabel();
+        for (Label label : sLabel) {
+                sLabel.remove(label);
+        }
+    }
 
 }
