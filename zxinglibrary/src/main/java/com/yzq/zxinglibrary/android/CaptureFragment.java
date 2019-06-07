@@ -384,6 +384,7 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback,
         else{
             String message="您可以手动输入详情或重新扫描";
             creatDialog(data.getText(),message);
+            restartScan();
         }
     }
 

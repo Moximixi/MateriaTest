@@ -1,7 +1,11 @@
 package com.yzq.zxinglibrary.android;
 
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -33,6 +37,9 @@ import com.yzq.zxinglibrary.camera.CameraManager;
 import com.yzq.zxinglibrary.common.Constant;
 import com.yzq.zxinglibrary.view.ViewfinderView;
 
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+
 public class MultiCaptureActivity extends AppCompatActivity implements ListFragment.ListListener,CaptureFragment.CaptureListener{
     private TabLayout tablayout;
     private ViewPager viewPager;
@@ -50,7 +57,10 @@ public class MultiCaptureActivity extends AppCompatActivity implements ListFragm
     private ListFragment mListFragment=null;
     private MyPagerAdapter myPagerAdapter;
 
-
+    //数据库相关
+    private SQLiteHelper myhelper;
+    private SQLiteDatabase db;
+    private Cursor cursor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -236,12 +246,47 @@ public class MultiCaptureActivity extends AppCompatActivity implements ListFragm
             CameraManager.get().flashHandler();
         }
         else if(item.getItemId()==R.id.capture_yes){
+            Toast.makeText(MultiCaptureActivity.this,"保存成功",Toast.LENGTH_SHORT);
             Intent intent = getIntent();
             Bundle bundle=new Bundle();
-            bundle.putSerializable("bookList",ListFragment.bookList);
+            //ArrayList list = new ArrayList();
+            //list.add(ListFragment.bookList);
+            //bundle.putSerializable("bookList",ListFragment.bookList);
+            //bundle.putParcelableArrayList("list",list);
+            //intent.putExtras(bundle);
             intent.putExtra(Constant.CODED_CONTENT, "");
             setResult(1, intent);
+            //save(ListFragment.bookList);
+            myhelper=SQLiteHelper.getInstance(getApplicationContext());
+            db=myhelper.getWritableDatabase();
+
+            for(int i=0;i<ListFragment.bookList.size();i++) {
+                Book book=ListFragment.bookList.get(i);
+                ContentValues values = new ContentValues();
+                values.put("ISBN", book.getISBN());
+                values.put("title", book.getTitle());
+                values.put("author", book.getAuthor());
+                values.put("translator", book.getTranslator());
+                values.put("publisher", book.getPublisher());
+                values.put("time_year", book.getTime_Year());
+                values.put("time_month", book.getTime_Month());
+                values.put("read_state", book.getRead_State());
+                values.put("book_shelf","");
+                values.put("note","");
+                values.put("tag","");
+                values.put("website", book.getWebsite());
+
+                byte[] bitmap_byte = bitmapToBytes(book.getBitmap());
+                values.put("img_bitmap", bitmap_byte);
+
+                db.insert("BookShelf", null, values);
+            }
+
+            db.close();
+            myhelper.close();
             MultiCaptureActivity.this.finish();
+
+
         }
         else if(item.getItemId()==android.R.id.home){
             quitDialog();
@@ -270,5 +315,53 @@ public class MultiCaptureActivity extends AppCompatActivity implements ListFragm
     }
 
 
+    public void save(final ArrayList<Book> bookList){
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                myhelper=SQLiteHelper.getInstance(getApplicationContext());
+                db=myhelper.getWritableDatabase();
+
+                for(int i=0;i<4;i++) {
+                    Book book=new Book();
+                    book.setTitle("sadasd"+i);
+                    ContentValues values = new ContentValues();
+                    values.put("ISBN", book.getISBN());
+                    values.put("title", book.getTitle());
+                    values.put("author", book.getAuthor());
+                    values.put("translator", book.getTranslator());
+                    values.put("publisher", book.getPublisher());
+                    values.put("time_year", book.getTime_Year());
+                    values.put("time_month", book.getTime_Month());
+                    values.put("read_state", book.getRead_State());
+                    values.put("book_shelf","");
+                    values.put("note","");
+                    values.put("tag","");
+                    values.put("website", book.getWebsite());
+
+                    byte[] bitmap_byte = bitmapToBytes(book.getBitmap());
+                    values.put("img_bitmap", bitmap_byte);
+
+                    db.insert("BookShelf", null, values);
+                }
+
+                db.close();
+                myhelper.close();
+
+            }
+        });
+        MultiCaptureActivity.this.finish();
+    }
+
+    private static byte[] bitmapToBytes(Bitmap bitmap){
+        if (bitmap == null) {
+            return null;
+        }
+        final ByteArrayOutputStream os = new ByteArrayOutputStream();
+        // 将Bitmap压缩成PNG编码，质量为100%存储
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);//除了PNG还有很多常见格式，如jpeg等。
+        return os.toByteArray();
+    }
 
 }

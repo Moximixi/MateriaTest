@@ -1,4 +1,4 @@
-package com.example.administrator.materiatest;
+package com.yzq.zxinglibrary.android;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,7 +13,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     private static final String dbname="BookShelfDataBase.db";
     private static final int version=1;
     private static final String table="BookShelf";
-    private static SQLiteHelper dbHelper;
+    private static  SQLiteHelper dbHelper;
     //也可以不指定字段的类型、长度，因为int类型也可以保存Char类型的创建学生表
     private final String createTb="CREATE TABLE "+table+" ("+
             "ISBN CHAR(13) not null ,"+

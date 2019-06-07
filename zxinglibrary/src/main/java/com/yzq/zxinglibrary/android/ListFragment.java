@@ -112,7 +112,7 @@ public class ListFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        bookList=null;
+        //bookList=null;
     }
 
     /**

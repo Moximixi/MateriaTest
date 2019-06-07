@@ -82,18 +82,6 @@ public class MainActivity extends AppCompatActivity {
         //权限申请
         initPermission();
 
-        //申请相机权限
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.CAMERA},REQUEST_CODE_CAMEAR);
-        }
-        //申请网络权限
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.INTERNET)!= PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.INTERNET},REQUEST_CODE_INTERNET);
-        }
-        //申请网络状态权限
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_NETWORK_STATE)!= PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.ACCESS_NETWORK_STATE},REQUEST_CODE_ACCESS_NETWORK_STATE);
-        }
 
         //顶部的toolbar
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
@@ -293,6 +281,12 @@ public class MainActivity extends AppCompatActivity {
         else if(requestCode==REQUEST_CODE_MultiSCAN){
             //确认完成
             if(resultCode==1){
+                //ArrayList<Book> booList=(ArrayList<Book>) data.getSerializableExtra("bookList");
+                //Bundle bundle=data.getExtras();
+                //ArrayList list = bundle.getParcelableArrayList("list");
+                //ArrayList<Book> booList= (ArrayList<Book>) list.get(0);
+                //StringBuffer bf=new StringBuffer();
+
 
             }
 
@@ -489,7 +483,7 @@ public class MainActivity extends AppCompatActivity {
             // 之前拒绝了权限，但没有点击 不再询问 这个时候让它继续请求权限
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.CAMERA)) {
-                Toast.makeText(this, "用户曾拒绝打开相机权限", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "用户曾拒绝打开相机权限", Toast.LENGTH_SHORT).show();
                 ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSIONS);
             } else {
                 //注册相机权限
@@ -541,7 +535,16 @@ public class MainActivity extends AppCompatActivity {
                 if (flag == false) continue;
 
                 byte[] bytes = cursor.getBlob(cursor.getColumnIndex("img_bitmap"));
-                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, null);
+                Bitmap bitmap;
+                //判断空情况
+                if(bytes!=null) {
+                    bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, null);
+                }
+                else {
+                    ImageView imageView =new ImageView(this);
+                    imageView.setImageResource(R.drawable.bookshelf);
+                    bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.img_init_bitmap);
+                }
                 //构造函数会将图片的格式统一
                 bookList.add(new Book(title, author, publisher, time_year, time_month, bitmap));
             }
