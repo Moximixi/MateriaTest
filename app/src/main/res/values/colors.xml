@@ -9,4 +9,5 @@
     <color name="black">#000000</color>
     <color name="red">#EE2C2C</color>
     <color name="normal_gray">#8a000000</color>
+    <color name="colorSecondaryText">#757575</color>
 </resources>

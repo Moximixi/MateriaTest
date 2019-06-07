@@ -32,4 +32,5 @@ dependencies {
     //compile 'com.github.yuzhiqiang1993:zxing:2.2.5'
     testCompile 'junit:junit:4.12'
     compile project(':zxinglibrary')
+    compile 'com.google.code.gson:gson:2.8.5'
 }
