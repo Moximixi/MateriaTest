@@ -1,5 +1,6 @@
 package com.yzq.zxinglibrary.android;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -73,6 +74,7 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback,
     private BeepManager beepManager;
     private SurfaceHolder surfaceHolder;
     private SurfaceView previewView;
+    private CaptureListener mListener;
 
     public CaptureFragment() {
         // Required empty public constructor
@@ -98,8 +100,7 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback,
 
     public interface CaptureListener {
         // TODO: Update argument type and name
-        void Cputure_set();
-
+        void Capture_set(Book data);
     }
 
 
@@ -172,6 +173,18 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback,
 
         inactivityTimer.onResume();
     }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        Bundle bundle = this.getArguments();
+        if (bundle.getString("Activity").equals("SingelCpatureActivity")) {
+
+        } else if (bundle.getString("Activity").equals("MultiCpatureActivity")) {
+            mListener = (CaptureListener) activity;
+        }
+    }
+
 
     @Override
     public void onPause() {
@@ -483,7 +496,7 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback,
 
 
 
-    public void initDialog(Book book){
+    public void initDialog(final Book book){
         final ImageView img = new ImageView(getActivity());
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(100,
                 100);
@@ -499,6 +512,7 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback,
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //initDownload(et.getText().toString());
+                mListener.Capture_set(book);
                 restartScan();
             }
         });

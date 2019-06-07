@@ -133,13 +133,13 @@ public class DataDownload {
                                 book.setAuthor(xmlPullParser.nextText());
                             else if (xmlPullParser.getAttributeValue(0).equals("translator"))
                                 book.setTranslator(xmlPullParser.nextText());
-<<<<<<< HEAD
+
                             else if (xmlPullParser.getAttributeValue(0).equals("author"))
                                 book.setAuthor(xmlPullParser.nextText());
-                            else if (xmlPullParser.getAttributeValue(0).equals("publisher"))
-=======
+                            else if (xmlPullParser.getAttributeValue(0).equals("publisher")){
+                                book.setPublisher(xmlPullParser.nextText());
+                            }
                             else if (xmlPullParser.getAttributeValue(0).equals("publisher"))  //!!!
->>>>>>> 4d165b83b69f077f1d52127003792d361a735398
                                 book.setPublisher(xmlPullParser.nextText());
                             else if (xmlPullParser.getAttributeValue(0).equals("pubdate")){
                                 String s=xmlPullParser.nextText();

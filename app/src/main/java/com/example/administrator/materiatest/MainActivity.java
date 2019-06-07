@@ -8,12 +8,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-<<<<<<< HEAD
-=======
+import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.media.Image;
->>>>>>> 4d165b83b69f077f1d52127003792d361a735398
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -25,6 +24,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -75,11 +76,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-<<<<<<< HEAD
+
         //权限申请
         initPermission();
 
-=======
         //申请相机权限
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.CAMERA},REQUEST_CODE_CAMEAR);
@@ -94,7 +94,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //顶部的toolbar
->>>>>>> 4d165b83b69f077f1d52127003792d361a735398
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -190,14 +189,14 @@ public class MainActivity extends AppCompatActivity {
         massaddition.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-<<<<<<< HEAD
+
                 try{
                     Intent intent = new Intent(MainActivity.this, MultiCaptureActivity.class);
                     startActivityForResult(intent, REQUEST_CODE_MultiSCAN);
                 }catch (SecurityException e){
                     e.printStackTrace();
                 }
-=======
+
 
             }
         });
@@ -207,7 +206,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
              //   Toast.makeText(MainActivity.this,"ghij",Toast.LENGTH_SHORT).show();
->>>>>>> 4d165b83b69f077f1d52127003792d361a735398
             }
         });
     }
@@ -439,7 +437,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-<<<<<<< HEAD
    //权限申请
     private void initPermission() {
         /**
@@ -464,51 +461,52 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //相册拍照
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},REQUEST_PERMISSIONS);
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSIONS);
         }
 
         //申请网络权限
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.INTERNET)!= PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.INTERNET},REQUEST_CODE_INTERNET);
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.INTERNET}, REQUEST_CODE_INTERNET);
         }
         //申请网络状态权限
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_NETWORK_STATE)!= PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.ACCESS_NETWORK_STATE},REQUEST_CODE_ACCESS_NETWORK_STATE);
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_NETWORK_STATE}, REQUEST_CODE_ACCESS_NETWORK_STATE);
         }
-=======
+    }
     /*
     这是一个辅助函数。功能：打开数据库，将所有的书取出添加到bookList中，
     并显示到主页面上
      */
-    public void show(){
-        myhelder=SQLiteHelper.getInstance(getApplicationContext());
-        db=myhelder.getReadableDatabase();
+
+    public void show() {
+        myhelder = SQLiteHelper.getInstance(getApplicationContext());
+        db = myhelder.getReadableDatabase();
         //获得游标
-        Cursor cursor=db.query("BookShelf",null,null,null,null,null,null);
+        Cursor cursor = db.query("BookShelf", null, null, null, null, null, null);
         //判断游标是否为空
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             while (cursor.moveToNext()) {
-                String isbn=cursor.getString(cursor.getColumnIndex("ISBN"));
+                String isbn = cursor.getString(cursor.getColumnIndex("ISBN"));
                 String title = cursor.getString(cursor.getColumnIndex("title"));
                 String author = cursor.getString(cursor.getColumnIndex("author"));
                 String publisher = cursor.getString(cursor.getColumnIndex("publisher"));
                 String time_year = cursor.getString(cursor.getColumnIndex("time_year"));
                 String time_month = cursor.getString(cursor.getColumnIndex("time_month"));
                 //避免显示重复数据
-                Boolean flag=true;
-                for(Book book:bookList){
-                    if(book.getISBN().equals(isbn)){
-                        flag=false;
+                Boolean flag = true;
+                for (Book book : bookList) {
+                    if (book.getISBN().equals(isbn)) {
+                        flag = false;
                         break;
                     }
                 }
-                if(flag==false)continue;
+                if (flag == false) continue;
 
                 byte[] bytes = cursor.getBlob(cursor.getColumnIndex("img_bitmap"));
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, null);
                 //构造函数会将图片的格式统一
-                bookList.add(new Book(title,author,publisher,time_year,time_month,bitmap));
+                bookList.add(new Book(title, author, publisher, time_year, time_month, bitmap));
             }
         }
         cursor.close();
@@ -519,14 +517,13 @@ public class MainActivity extends AppCompatActivity {
         Comparator<Book> BookComparatorBytitle = new Comparator<Book>() {
             @Override
             public int compare(Book o1, Book o2) {
-                if(myCollator.compare(o1.getTitle(),o2.getTitle())>0)return 1;
+                if (myCollator.compare(o1.getTitle(), o2.getTitle()) > 0) return 1;
                 else return -1;
             }
         };
         Collections.sort(bookList, BookComparatorBytitle);
         adapter.notifyDataSetChanged();
 
->>>>>>> 4d165b83b69f077f1d52127003792d361a735398
     }
 
 }

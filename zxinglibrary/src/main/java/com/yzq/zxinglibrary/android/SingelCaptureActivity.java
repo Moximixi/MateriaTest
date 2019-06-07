@@ -83,7 +83,7 @@ public class SingelCaptureActivity extends AppCompatActivity implements ListFrag
 
     //重写fragment中的接口方法
     @Override
-    public void List_set(){
+    public void List_set(int len){
         //TODO
     }
 

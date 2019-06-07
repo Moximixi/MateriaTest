@@ -1,5 +1,6 @@
 package com.yzq.zxinglibrary.android;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -11,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
@@ -31,7 +33,7 @@ import com.yzq.zxinglibrary.camera.CameraManager;
 import com.yzq.zxinglibrary.common.Constant;
 import com.yzq.zxinglibrary.view.ViewfinderView;
 
-public class MultiCaptureActivity extends AppCompatActivity implements ListFragment.ListListener{
+public class MultiCaptureActivity extends AppCompatActivity implements ListFragment.ListListener,CaptureFragment.CaptureListener{
     private TabLayout tablayout;
     private ViewPager viewPager;
     private Toolbar toolbar;
@@ -44,6 +46,9 @@ public class MultiCaptureActivity extends AppCompatActivity implements ListFragm
     public ZxingConfig config;
     private CameraManager cameraManager;
     private CaptureActivityHandler handler;
+    private CaptureFragment mCaptureFragment=null;
+    private ListFragment mListFragment=null;
+    private MyPagerAdapter myPagerAdapter;
 
 
 
@@ -58,7 +63,7 @@ public class MultiCaptureActivity extends AppCompatActivity implements ListFragm
         tablayout = (TabLayout) findViewById(R.id.tablayout);
         viewPager = (ViewPager) findViewById(R.id.viewpager);
 
-        MyPagerAdapter myPagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
+        myPagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tablayout));
         viewPager.setAdapter(myPagerAdapter);
@@ -105,14 +110,59 @@ public class MultiCaptureActivity extends AppCompatActivity implements ListFragm
 
     }
 
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        len=0;
+
+    }
 
     //重写fragment中的接口方法
     @Override
-    public void List_set(){
-        //TODO
+    public void List_set(int len){
+        this.len=len;
+        tabtitles[1]="已添加("+len+")";
+        myPagerAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void Capture_set(Book data){
+
+        //ListFragment.bookList.add(data);
+        len=ListFragment.bookList.size()+1;
+        tabtitles[1]="已添加("+len+")";
+        myPagerAdapter.notifyDataSetChanged();
+        ListFragment.mCollectRecyclerAdapter.addData(data);
     }
 
 
+    //处理按下back键
+    @Override
+    public void onBackPressed() {
+        quitDialog();
+    }
+
+    public void quitDialog(){
+        AlertDialog.Builder dialog=new AlertDialog.Builder(this);
+        dialog.setTitle("警告！");
+        dialog.setMessage("您所保存的书籍将不会被保留，确认退出吗？");
+        dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+
+        dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.create();
+        dialog.show();
+    }
 
 
     //fragment切换的pager适配器
@@ -135,16 +185,20 @@ public class MultiCaptureActivity extends AppCompatActivity implements ListFragm
         public Fragment getItem(int position) {
             if(position==0)
             {
-                CaptureFragment fragment=new CaptureFragment();
+                if(mCaptureFragment==null) {
+                    mCaptureFragment = new CaptureFragment();
+                }
                //CaptureFragment fragment= CaptureFragment.newInstance("","");
                 Bundle bundle = new Bundle();
                 bundle.putString("Activity","MultiCpatureActivity");
-                fragment.setArguments(bundle);
-                return fragment;
+                mCaptureFragment.setArguments(bundle);
+                return mCaptureFragment;
             }
             else {
-                ListFragment fragment = ListFragment.newInstance("","");
-                return fragment;
+                if(mListFragment==null) {
+                    mListFragment = ListFragment.newInstance("", "");
+                }
+                return mListFragment;
             }
 
         }
@@ -183,12 +237,14 @@ public class MultiCaptureActivity extends AppCompatActivity implements ListFragm
         }
         else if(item.getItemId()==R.id.capture_yes){
             Intent intent = getIntent();
+            Bundle bundle=new Bundle();
+            bundle.putSerializable("bookList",ListFragment.bookList);
             intent.putExtra(Constant.CODED_CONTENT, "");
             setResult(1, intent);
             MultiCaptureActivity.this.finish();
         }
         else if(item.getItemId()==android.R.id.home){
-            finish();
+            quitDialog();
         }
 
         return true;

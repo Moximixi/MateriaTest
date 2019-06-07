@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 
 import android.support.v7.widget.RecyclerView;
@@ -40,14 +39,14 @@ public class ListFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private  ListListener mListener;
+    private  static ListListener mListener;
 
     private View view;//定义view用来设置fragment的layout
     public RecyclerView recyclerView;//定义RecyclerView
     //定义以Book实体类为对象的数据集合
-    private ArrayList<Book> bookList = new ArrayList<Book>();
+    public static ArrayList<Book> bookList ;
     //自定义recyclerveiw的适配器
-    private CollectRecycleAdapter mCollectRecyclerAdapter;
+    public static CollectRecycleAdapter mCollectRecyclerAdapter;
     public ListFragment() {
         // Required empty public constructor
     }
@@ -86,12 +85,6 @@ public class ListFragment extends Fragment {
         view=inflater.inflate(R.layout.fragment_list, container, false);
         //对recycleview进行配置
         initRecyclerView();
-        for (int i=0;i<20;i++) {
-            Book book = new Book();
-            book.setTitle("sadsa"+i);
-            book.setAuthor("233");
-            bookList.add(book);
-        }
         return view;
 
     }
@@ -99,13 +92,14 @@ public class ListFragment extends Fragment {
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed() {
         if (mListener != null) {
-            mListener.List_set();
+            //mListener.List_set();
         }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        bookList=new ArrayList<Book>();
         if (context instanceof ListListener) {
             mListener = (ListListener) context;
         } else {
@@ -118,6 +112,7 @@ public class ListFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        bookList=null;
     }
 
     /**
@@ -132,7 +127,8 @@ public class ListFragment extends Fragment {
      */
     public interface ListListener {
         // TODO: Update argument type and name
-        void List_set();
+        void List_set(int len);
+
 
     }
 
@@ -152,7 +148,7 @@ public class ListFragment extends Fragment {
         //参数是：上下文、列表方向（横向还是纵向）、是否倒叙
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         //设置item的分割线
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),DividerItemDecoration.VERTICAL));
+        //recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),DividerItemDecoration.VERTICAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
 
@@ -162,13 +158,8 @@ public class ListFragment extends Fragment {
             @Override
             public void OnItemClick(View view, Book data) {
                 //此处进行监听事件的业务处理
-                if(view.getId()==R.id.delete){
-                    Toast.makeText(getActivity(),"删除",Toast.LENGTH_SHORT).show();
-                }
-
-                else {
                     Toast.makeText(getActivity(), "我是item", Toast.LENGTH_SHORT).show();
-                }
+
             }
         });
     }
@@ -243,6 +234,7 @@ public class ListFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         removeData(getLayoutPosition());
+                        ListFragment.mListener.List_set(bookList.size());
                     }
                 });
                 //点击事件放在adapter中使用，也可以写个接口在activity中调用
@@ -266,11 +258,11 @@ public class ListFragment extends Fragment {
 
 
         //  添加数据
-        public void addData(int position,Book data) {
+        public void addData(Book data) {
 //      在list中添加数据，并通知条目加入一条
-            this.booksEntityList.add(position, data);
+            this.booksEntityList.add(data);
             //添加动画
-            notifyItemInserted(position);
+            notifyItemInserted(bookList.size());
         }
 
         //  删除数据
