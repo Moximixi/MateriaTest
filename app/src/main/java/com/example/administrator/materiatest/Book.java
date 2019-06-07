@@ -1,7 +1,6 @@
 package com.example.administrator.materiatest;
 
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -11,24 +10,6 @@ import java.util.ArrayList;
  */
 
 public class Book implements Serializable{
-    public Book(){}
-    //自定义的一个构造函数，主要是用在主界面显示书上
-    //显示四个属性,标题，作者，出版时间，还有一张图片
-    //图片按照固定的长宽格式化。80*120
-    public Book(String mtitle,String mauthor,String mpublisher,
-                String myear,String mmonth,Bitmap bitmap){
-        title=mtitle;
-        author=mauthor;
-        publisher=mpublisher;
-        time_Month=mmonth;
-        time_Year=myear;
-        //将所有的图片做一个缩放操作,保证所有的图片加载后都是80和120
-        Matrix matrix = new Matrix();
-        matrix.postScale(80.0f/bitmap.getWidth(), 120.0f/bitmap.getHeight());
-        mBitmap=Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(),
-                matrix,true);
-
-    }
     public String getTitle() {
         return title;
     }

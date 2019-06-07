@@ -18,24 +18,14 @@
             android:background="?attr/colorPrimary"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/Base.ThemeOverlay.AppCompat.Light">
-
         </android.support.v7.widget.Toolbar>
 
-
-        <ListView
-            android:id="@+id/list_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="?attr/actionBarSize"
-            android:divider="#00000000"  >
-
-        </ListView>
         <com.getbase.floatingactionbutton.FloatingActionsMenu
             android:id="@+id/floatingactionbutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
-            android:layout_gravity="right|bottom"
+            android:layout_marginTop="380dp"
+            android:layout_gravity="right"
             fab:fab_labelStyle="@style/floatingActionsMenu_fab_style">
             <com.getbase.floatingactionbutton.FloatingActionButton
                 android:id="@+id/addbook"
@@ -62,6 +52,5 @@
         app:menu="@menu/nav_menu"
         app:headerLayout="@layout/nav_header">
     </android.support.design.widget.NavigationView>
-
 </android.support.v4.widget.DrawerLayout>
 
