@@ -30,9 +30,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -68,8 +70,8 @@ public class MainActivity extends AppCompatActivity {
 
     private MenuItem searchItem;  //顶部菜单栏的搜索控件
     private SearchView searchView ;
-
-
+    public EditText temp_tagText;
+    public SubMenu addLabel;//添加标签
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,17 +124,35 @@ public class MainActivity extends AppCompatActivity {
         //测拉菜单的各种按钮逻辑
         //加标签，搜索，设置页面，关于页面。
         navigationView.setCheckedItem(R.id.nav_book);
+
+        final List<Label> labels = LabelLab.get(this).getLabels();
+        Menu menu=navigationView.getMenu();
+        //动态添加菜单选项
+        addLabel=menu.addSubMenu(1,0,0,"标签");
+        addLabel.add(1,1,1,"添加新标签").setIcon(R.drawable.add);
+        menu.add(2,1,0,"设置").setIcon(R.drawable.setting);
+        menu.add(2,2,0,"关于").setIcon(R.drawable.about);
+        //动态显示标签
+        for (int i = 0; i < labels.size(); i++) {
+            Label label=labels.get(i);
+            addLabel.add(1,(int)label.getId(),1,label.getTitle()).setIcon(R.drawable.ic_label);
+        }
+
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.
                 OnNavigationItemSelectedListener(){
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
                 mDrawLayout.closeDrawers();
-                switch(item.getItemId()){
-                    case R.id.nav_add:
+                //标签
+                if(item.getGroupId()==1){
+                    //添加标签的按钮
+                    if(item.getItemId()==1){
                         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
                         View view1 = View.inflate(MainActivity.this, R.layout.add_layout, null);
                         Button calcle=(Button)view1.findViewById(R.id.add_button_cancle);
                         Button commit=(Button)view1.findViewById(R.id.add_button_commit);
+                        temp_tagText=(EditText)view1.findViewById(R.id.add_tag_edit);
                         alertDialog
                                 .setTitle("添加标签")
                                 .setView(view1)
@@ -141,33 +161,50 @@ public class MainActivity extends AppCompatActivity {
                         calcle.setOnClickListener(new View.OnClickListener(){
                             @Override
                             public void onClick(View v) {
-                                //Toast.makeText(MainActivity.this,"取消",Toast.LENGTH_SHORT).show();
+                                show.dismiss();
                             }
                         });
                         commit.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                //Toast.makeText(MainActivity.this,"确定",Toast.LENGTH_SHORT).show();
+                                Label newLabel=new Label();
+                                String str=temp_tagText.getText().toString();
+                                newLabel.setTitle(str);
+                                addNewLabel(newLabel);
                                 show.dismiss();
                             }
                         });
-                        break;
+                    }
+                    //点击标签
+                    else if(item.getItemId()>1){
+                        getLabelBook(item.getItemId());
+                    }
+                }
+
+                if(item.getGroupId()==2){
+                    switch(item.getItemId()){
+                        case 1: //设置
+                            Intent intent=new Intent(MainActivity.this,SettingActivity.class);
+                            startActivity(intent);
+                            break;
+                        case 2://关于
+                            Intent intent2=new Intent(MainActivity.this,AboutActivity.class);
+                            startActivity(intent2);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                switch(item.getItemId()){
                     case R.id.nav_search:
-                        searchItem.expandActionView();//直接把搜索栏目展开就好了
-                        break;
-                    case R.id.nav_setting:
-                        Intent intent=new Intent(MainActivity.this,SettingActivity.class);
-                        startActivity(intent);
-                        break;
-                    case R.id.nav_about:
-                        Intent intent2=new Intent(MainActivity.this,AboutActivity.class);
-                        startActivity(intent2);
+                        // onSearchRequested();
                         break;
                     default:
+                        break;
                 }
                 return true;
-           }
-       });
+            }
+        });
 
       //两个悬浮按钮的逻辑
         final com.getbase.floatingactionbutton.FloatingActionButton addbook =
@@ -526,6 +563,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void addNewLabel(Label label){
+        LabelLab.get(MainActivity.this).addLabel(label);
+        addLabel.add(1,label.getId(),1,label.getTitle()).setIcon(R.drawable.ic_label);
+    }
+
+    //获取标签对应的书籍并且显示
+    private void getLabelBook(int id){
+
+    }
 }
 
 

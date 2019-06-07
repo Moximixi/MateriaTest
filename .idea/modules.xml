@@ -3,7 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MateriaTest.iml" filepath="$PROJECT_DIR$/MateriaTest.iml" />
+<<<<<<< HEAD
       <module fileurl="file://$PROJECT_DIR$/SwipeItemlibrary/SwipeItemlibrary.iml" filepath="$PROJECT_DIR$/SwipeItemlibrary/SwipeItemlibrary.iml" />
+=======
+>>>>>>> c0739d8d2d6a90517443b09975745bf31304e1f8
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/zxinglibrary/zxinglibrary.iml" filepath="$PROJECT_DIR$/zxinglibrary/zxinglibrary.iml" />
     </modules>
