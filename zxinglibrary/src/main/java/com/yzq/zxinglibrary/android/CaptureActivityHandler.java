@@ -21,11 +21,15 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 
+import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 import com.yzq.zxinglibrary.camera.CameraManager;
 import com.yzq.zxinglibrary.common.Constant;
+import com.yzq.zxinglibrary.decode.DecodeHandlerInterface;
 import com.yzq.zxinglibrary.decode.DecodeThread;
 import com.yzq.zxinglibrary.view.ViewfinderResultPointCallback;
+
+import java.util.Vector;
 
 /**
  * This class handles all the messaging which comprises the state machine for
@@ -38,14 +42,32 @@ public final class CaptureActivityHandler extends Handler {
     private static final String TAG = CaptureActivityHandler.class
             .getSimpleName();
 
-    private final CaptureActivity activity;
+    private static CaptureActivity activity;
     private final DecodeThread decodeThread;
+    private static DecodeHandlerInterface handlerInterface;
     private State state;
-    private final CameraManager cameraManager;
+    private static CameraManager cameraManager;
 
     private enum State {
         PREVIEW, SUCCESS, DONE
     }
+
+
+    public CaptureActivityHandler(DecodeHandlerInterface handlerInterface,
+                                  Vector<BarcodeFormat> decodeFormats, String characterSet,CameraManager cameraManager) {
+        this.handlerInterface = handlerInterface;
+        decodeThread = new DecodeThread(handlerInterface, decodeFormats,
+                characterSet, new ViewfinderResultPointCallback(
+                handlerInterface.getViewfinderView()));
+        decodeThread.start();
+        state = State.SUCCESS;
+        // Start ourselves capturing previews and decoding.
+
+        this.cameraManager = cameraManager;
+        cameraManager.startPreview();
+        restartPreviewAndDecode();
+    }
+
 
     public CaptureActivityHandler(CaptureActivity activity,CameraManager cameraManager) {
         this.activity = activity;
@@ -73,7 +95,12 @@ public final class CaptureActivityHandler extends Handler {
                 // 解码成功
 
                 state = State.SUCCESS;
-                activity.handleDecode((Result) message.obj);
+                if (handlerInterface==null && activity!=null) {
+                    activity.handleDecode((Result) message.obj);
+                }
+                else if(activity==null && handlerInterface!=null){
+                    handlerInterface.resturnScanResult(1,(Result) message.obj);
+                }
 
                 break;
             case Constant.DECODE_FAILED:
@@ -86,8 +113,13 @@ public final class CaptureActivityHandler extends Handler {
                 break;
             case Constant.RETURN_SCAN_RESULT:
 
-                activity.setResult(Activity.RESULT_OK, (Intent) message.obj);
-                activity.finish();
+                if(handlerInterface==null) {
+                    activity.setResult(Activity.RESULT_OK, (Intent) message.obj);
+                    activity.finish();
+                }
+                else if (activity==null){
+
+                }
                 break;
             case Constant.FLASH_OPEN:
                 activity.switchFlashImg(Constant.FLASH_OPEN);
@@ -105,7 +137,9 @@ public final class CaptureActivityHandler extends Handler {
         state = State.DONE;
         cameraManager.stopPreview();
         Message quit = Message.obtain(decodeThread.getHandler(), Constant.QUIT);
-        quit.sendToTarget();
+        if(quit!=null)
+        //quit.sendToTarget();
+        /*
         try {
             // Wait at most half a second; should be enough time, and onPause()
             // will timeout quickly
@@ -113,6 +147,7 @@ public final class CaptureActivityHandler extends Handler {
         } catch (InterruptedException e) {
             // continue
         }
+        */
 
         // Be absolutely sure we don't send any queued up messages
         //确保不会发送任何队列消息
@@ -125,7 +160,12 @@ public final class CaptureActivityHandler extends Handler {
             state = State.PREVIEW;
             cameraManager.requestPreviewFrame(decodeThread.getHandler(),
                     Constant.DECODE);
-            activity.drawViewfinder();
+            if(handlerInterface==null) {
+                activity.drawViewfinder();
+            }
+            else if (activity==null) {
+                handlerInterface.drawViewfinder();
+            }
         }
     }
 

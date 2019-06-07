@@ -44,7 +44,6 @@ public final class CameraManager {
     private static final String TAG = CameraManager.class.getSimpleName();
 
     private static CameraManager cameraManager;
-
     private final Context context;
     private final CameraConfigurationManager configManager;
     private ZxingConfig config;
@@ -62,6 +61,11 @@ public final class CameraManager {
      * handler. Make sure to clear the handler so it will only receive one
      * message.
      */
+
+    public CameraManager getCameraManager() {
+        return cameraManager;
+    }
+
     private final PreviewCallback previewCallback;
 
     public CameraManager(Context context, ZxingConfig config) {
@@ -71,11 +75,13 @@ public final class CameraManager {
         this.config = config;
     }
 
-//    public static void init(Context context) {
-//        if (cameraManager == null) {
-//            cameraManager = new CameraManager(context, null);
-//        }
-//    }
+    public static void init(Context context) {
+        if (cameraManager == null) {
+            cameraManager = new CameraManager(context, null);
+        }
+   }
+
+
 
 
     /**
@@ -188,6 +194,29 @@ public final class CameraManager {
         camera.setParameters(parameters);
         handler.sendMessage(msg);
     }
+
+
+    public void flashHandler() {
+  //camera.startPreview();  
+  Camera.Parameters parameters = camera.getParameters();
+ // 判断闪光灯当前状态來修改
+ if (Camera.Parameters.FLASH_MODE_OFF.equals(parameters.getFlashMode())) {
+   turnOn(parameters);
+  } else if (Camera.Parameters.FLASH_MODE_TORCH.equals(parameters.getFlashMode())) {
+  turnOff(parameters);
+  }
+ }
+              //開
+              private void turnOn(Camera.Parameters parameters) {
+  parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+  camera.setParameters(parameters);
+  }
+             //關
+             private void turnOff(Camera.Parameters parameters) {
+parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+ camera.setParameters(parameters);
+}
+
 
 
     /**

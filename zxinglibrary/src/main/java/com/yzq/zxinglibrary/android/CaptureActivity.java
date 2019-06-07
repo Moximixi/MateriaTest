@@ -12,7 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
@@ -32,7 +31,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -123,6 +121,9 @@ public class CaptureActivity extends AppCompatActivity implements SurfaceHolder.
         }
 
 
+        CameraManager.init(getApplication());
+        cameraManager=CameraManager.get();
+
         setContentView(R.layout.activity_capture_add);
 
 
@@ -186,7 +187,7 @@ public class CaptureActivity extends AppCompatActivity implements SurfaceHolder.
     //自己写的代码（顶部菜单）
     //菜单
     public boolean onCreateOptionsMenu(Menu menu){
-        getMenuInflater().inflate(R.menu.caputer_setting,menu);
+        getMenuInflater().inflate(R.menu.singel_caputer_setting,menu);
         return true;
     }
 
@@ -195,11 +196,11 @@ public class CaptureActivity extends AppCompatActivity implements SurfaceHolder.
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==R.id.menu_flash){
             if(flash_state) {
-                item.setIcon(R.drawable.falsh_close);
+                item.setIcon(R.drawable.falsh_open);
                 flash_state=false;
             }
             else {
-                item.setIcon(R.drawable.falsh_open);
+                item.setIcon(R.drawable.falsh_close);
                 flash_state=true;
             }
             cameraManager.switchFlashLight(handler);
@@ -221,7 +222,7 @@ public class CaptureActivity extends AppCompatActivity implements SurfaceHolder.
     }
 
 
-
+   //自己写的代码
     public void initDialog(){
         final EditText et = new EditText(this);
         AlertDialog.Builder dialog=new AlertDialog.Builder(new ContextThemeWrapper(CaptureActivity.this, R.style.AlertDialogCustom) );
@@ -443,7 +444,8 @@ public class CaptureActivity extends AppCompatActivity implements SurfaceHolder.
     protected void onResume() {
         super.onResume();
 
-        cameraManager = new CameraManager(getApplication(), config);
+
+        //cameraManager = new CameraManager(getApplication(), config);
 
         viewfinderView.setCameraManager(cameraManager);
         handler = null;

@@ -28,22 +28,32 @@ import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 import com.yzq.zxinglibrary.android.CaptureActivity;
+import com.yzq.zxinglibrary.camera.CameraManager;
 import com.yzq.zxinglibrary.common.Constant;
 
+import java.util.Hashtable;
 import java.util.Map;
 
 public final class DecodeHandler extends Handler {
 
     private static final String TAG = DecodeHandler.class.getSimpleName();
 
-    private final CaptureActivity activity;
+    private static CaptureActivity activity;
     private final MultiFormatReader multiFormatReader;
     private boolean running = true;
+    private static DecodeHandlerInterface handlerInterface;
 
     DecodeHandler(CaptureActivity activity, Map<DecodeHintType, Object> hints) {
         multiFormatReader = new MultiFormatReader();
         multiFormatReader.setHints(hints);
         this.activity = activity;
+    }
+
+    DecodeHandler(DecodeHandlerInterface handlerInterface,
+                  Hashtable<DecodeHintType, Object> hints) {
+        multiFormatReader = new MultiFormatReader();
+        multiFormatReader.setHints(hints);
+        this.handlerInterface = handlerInterface;
     }
 
     @Override
@@ -82,9 +92,15 @@ public final class DecodeHandler extends Handler {
         height = tmp;
         data = rotatedData;
 
-        PlanarYUVLuminanceSource source = activity.getCameraManager()
-                .buildLuminanceSource(data, width, height);
-
+        PlanarYUVLuminanceSource source=null;
+        if(handlerInterface==null) {
+            source = activity.getCameraManager()
+                    .buildLuminanceSource(data, width, height);
+        }
+        else if (activity==null){
+            source = CameraManager.get()
+                    .buildLuminanceSource(data, width, height);
+        }
 
         if (source != null) {
             BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
@@ -101,7 +117,13 @@ public final class DecodeHandler extends Handler {
 
 
 
-        Handler handler = activity.getHandler();
+        Handler handler =null;
+        if(handlerInterface==null) {
+            handler = activity.getHandler();
+        }
+        else if (activity==null){
+            handler=handlerInterface.getHandler();
+        }
         if (rawResult != null) {
 
             if (handler != null) {

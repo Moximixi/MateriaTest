@@ -8,9 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -20,7 +18,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,36 +25,28 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
-import com.getbase.floatingactionbutton.*;
-import com.yzq.zxinglibrary.android.CaptureActivity;
+
+import com.yzq.zxinglibrary.android.MultiCaptureActivity;
+import com.yzq.zxinglibrary.android.SingelCaptureActivity;
 import com.yzq.zxinglibrary.common.Constant;
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawLayout;
     private int REQUEST_CODE_SCAN = 111;
+    private int REQUEST_CODE_MultiSCAN = 112;
     private final int REQUEST_CODE_CAMEAR=200;
     private final int REQUEST_CODE_INTERNET=201;
     private final int REQUEST_CODE_ACCESS_NETWORK_STATE=202;
     private final int REQUEST_CODE_EDITACTIVITY=233;
+    private final int REQUEST_PERMISSIONS=234;
     final String[] items4 = new String[]{"标题", "作者", "出版社", "出版时间"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //申请相机权限
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.CAMERA},REQUEST_CODE_CAMEAR);
-        }
-        //申请网络权限
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.INTERNET)!= PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.INTERNET},REQUEST_CODE_INTERNET);
-        }
-        //申请网络状态权限
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_NETWORK_STATE)!= PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.ACCESS_NETWORK_STATE},REQUEST_CODE_ACCESS_NETWORK_STATE);
-        }
-
+        //权限申请
+        initPermission();
 
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -129,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try{
-                    Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+                    Intent intent = new Intent(MainActivity.this, SingelCaptureActivity.class);
                     startActivityForResult(intent, REQUEST_CODE_SCAN);
                 }catch (SecurityException e){
                     e.printStackTrace();
@@ -142,6 +131,12 @@ public class MainActivity extends AppCompatActivity {
         massaddition.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                try{
+                    Intent intent = new Intent(MainActivity.this, MultiCaptureActivity.class);
+                    startActivityForResult(intent, REQUEST_CODE_MultiSCAN);
+                }catch (SecurityException e){
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -178,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }
-
+        //编辑界面返回信息
         else if(requestCode==REQUEST_CODE_EDITACTIVITY){
             if(resultCode==0){
                 //丢弃修改
@@ -212,6 +207,13 @@ public class MainActivity extends AppCompatActivity {
                 myhelder.close();
 
             }
+        }
+        else if(requestCode==REQUEST_CODE_MultiSCAN){
+            //确认完成
+            if(resultCode==1){
+
+            }
+
         }
     }
 
@@ -282,7 +284,61 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, "你没启动网络状态权限", Toast.LENGTH_SHORT).show();
                 }
                 break;
+            case REQUEST_PERMISSIONS:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //成功
+                    Toast.makeText(this, "用户授权相机权限", Toast.LENGTH_SHORT).show();
+                } else {
+                    // 勾选了不再询问
+                    Toast.makeText(this, "用户拒绝相机权限", Toast.LENGTH_SHORT).show();
+                    /**
+                     * 跳转到 APP 详情的权限设置页
+                     *
+                     * 可根据自己的需求定制对话框，点击某个按钮在执行下面的代码
+                     */
+                    //Intent intent = Util.getAppDetailSettingIntent(PhotoFromSysActivity.this);
+                   // startActivity(intent);
+                }
+                break;
             default:
+        }
+    }
+
+   //权限申请
+    private void initPermission() {
+        /**
+         * 初始化相机相关权限
+         * 适配6.0+手机的运行时权限
+         */
+        String[] permissions = new String[]{Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE};
+        //检查权限
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            // 之前拒绝了权限，但没有点击 不再询问 这个时候让它继续请求权限
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.CAMERA)) {
+                Toast.makeText(this, "用户曾拒绝打开相机权限", Toast.LENGTH_SHORT).show();
+                ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSIONS);
+            } else {
+                //注册相机权限
+                ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSIONS);
+            }
+        }
+
+        //相册拍照
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},REQUEST_PERMISSIONS);
+        }
+
+        //申请网络权限
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.INTERNET)!= PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.INTERNET},REQUEST_CODE_INTERNET);
+        }
+        //申请网络状态权限
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_NETWORK_STATE)!= PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.ACCESS_NETWORK_STATE},REQUEST_CODE_ACCESS_NETWORK_STATE);
         }
     }
 

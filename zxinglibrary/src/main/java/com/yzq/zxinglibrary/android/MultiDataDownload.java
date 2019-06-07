@@ -1,4 +1,4 @@
-package com.example.administrator.materiatest;
+package com.yzq.zxinglibrary.android;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,14 +17,13 @@ import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-
 import static android.content.ContentValues.TAG;
 
 /**
  * Created by Administrator on 2019/6/1.
  */
 
-public class DataDownload {
+public class MultiDataDownload {
     private Message msg=Message.obtain();
 
     public void scanResult(final Handler handler , final String ISBN){

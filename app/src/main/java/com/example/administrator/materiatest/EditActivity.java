@@ -6,10 +6,15 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.ContactsContract;
+import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -36,9 +41,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -59,6 +68,13 @@ public class EditActivity extends AppCompatActivity {
     private Cursor cursor;
 
     private Book book=null;
+
+    private final int CAMERA_RESULT_CODE=500;
+    private final int CROP_RESULT_CODE=501;
+    private final int ALBUM_RESULT_CODE=502;
+
+    private String imag_file;
+    private File file;
 
 
     @Override
@@ -82,6 +98,27 @@ public class EditActivity extends AppCompatActivity {
 
         //初始化编辑组件
         init();
+
+        mImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(EditActivity.this);
+                builder.setTitle("更换封面");
+                builder.setItems(new String[]{"拍摄新图片","从相册选择图片"}, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which){
+                            case 0:
+                                openSysCamera();
+                                break;
+                            case 1:
+                                openSysAlbum();
+                        }
+                    }
+                });
+                builder.create().show();
+            }
+        });
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -201,6 +238,9 @@ public class EditActivity extends AppCompatActivity {
     }
 
 
+        });
+    }
+
 
     public void InitAddTagDialog(){
         final View  dialog_view1=(RelativeLayout) getLayoutInflater().inflate(R.layout.edit_dialog_shelf_layout,null);
@@ -224,7 +264,7 @@ public class EditActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //TODO
-                 InitTagDialog();
+                InitTagDialog();
             }
         });
 
@@ -259,55 +299,70 @@ public class EditActivity extends AppCompatActivity {
         });
     }
 
+    public void InitTagDialog(){
+        tag_state=new boolean[tagList.size()];
+        tagArray=tagList.toArray(new String[tagList.size()]);
+        tagSet.clear();
+        //初始化已选的标签勾中状态
+        String temp=tag.getText().toString();
+        String[] temps=temp.split(",");
+            for(int i=0;i<tagList.size();i++){
+                for(String s:temps){
+                if(tagList.get(i).equals(s)){
+                    tag_state[i]=true;
+                    tagSet.add(s);
+                }
+            }
+        }
 
-            public void InitTagDialog(){
-                tag_state=new boolean[tagList.size()];
-                tagArray=tagList.toArray(new String[tagList.size()]);
-                tagSet.clear();
-                final AlertDialog.Builder dialog=new AlertDialog.Builder(EditActivity.this);
-                dialog.setTitle(R.string.dialog_title2);
-                dialog.setMultiChoiceItems(tagArray,tag_state,new DialogInterface.OnMultiChoiceClickListener(){
-                    @Override
-                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                        if(isChecked){
-                            tagSet.add(tagList.get(which));
-                        }
-                        else if(!isChecked){
-                            tagSet.remove(tagList.get(which));
-                        }
-                    }
-                });
-                dialog.setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        StringBuffer bf=new StringBuffer();
-                        for(String str:tagSet){
-                            bf.append(str+",");
-                        }
-                        if(bf.length()>1) {
-                            bf.deleteCharAt(bf.length() - 1);
-                            tag.setTextColor(getResources().getColor(R.color.black));
-                            tag.setText(bf.toString());
-                        }
-                        else {
-                            tag.setTextColor(getResources().getColor(R.color.gray));
-                            tag.setText(R.string.dialog_addTag);
-                        }
-                    }
-                });
 
-                dialog.setNegativeButton(R.string.dialog_addTag, new DialogInterface.OnClickListener() {
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        InitAddTagDialog();//打开另一个弹窗
-                    }
-                });
-                AlertDialog alertDialog=dialog.create();
-                alertDialog.show();
+        final AlertDialog.Builder dialog=new AlertDialog.Builder(EditActivity.this);
+        dialog.setTitle(R.string.dialog_title2);
+        dialog.setMultiChoiceItems(tagArray,tag_state,new DialogInterface.OnMultiChoiceClickListener(){
+            @Override
+            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                if(isChecked){
+                    tagSet.add(tagList.get(which));
+                }
+                else if(!isChecked){
+                    tagSet.remove(tagList.get(which));
+                }
             }
         });
+        dialog.setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                StringBuffer bf=new StringBuffer();
+                for(String str:tagSet){
+                    bf.append(str+",");
+                }
+                if(bf.length()>1) {
+                    bf.deleteCharAt(bf.length() - 1);
+                    tag.setTextColor(getResources().getColor(R.color.black));
+                    tag.setText(bf.toString());
+                }
+                else {
+                    tag.setTextColor(getResources().getColor(R.color.gray));
+                    tag.setText(R.string.dialog_addTag);
+                }
+            }
+        });
+
+        dialog.setNeutralButton(R.string.dialog_addTag, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                InitAddTagDialog();//打开另一个弹窗
+            }
+        });
+
+        AlertDialog alertDialog=dialog.create();
+        alertDialog.show();
     }
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -345,7 +400,11 @@ public class EditActivity extends AppCompatActivity {
             values.put("tag",tag.getText().toString());
             values.put("website",website.getText().toString());
 
-            byte[] bitmap_byte = bitmapToBytes(book.getBitmap());
+            mImageView.setDrawingCacheEnabled(true);
+            Bitmap bitmap = Bitmap.createBitmap(mImageView.getDrawingCache());
+            mImageView.setDrawingCacheEnabled(false);
+
+            byte[] bitmap_byte = bitmapToBytes(bitmap);
             values.put("img_bitmap",bitmap_byte);
 
             db.insert("BookShelf",null,values);
@@ -439,5 +498,139 @@ public class EditActivity extends AppCompatActivity {
         }
 
     }
+
+
+
+
+    //打开相机
+    public void openSysCamera(){
+        if(!ISBN.getText().toString().equals("")){
+            imag_file=ISBN.getText().toString();
+        }
+        else {
+            imag_file=String.valueOf(new Random().nextInt(1000))+String.valueOf(new Random().nextInt(1000));
+        }
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(
+                new File(Environment.getExternalStorageDirectory(), imag_file)));
+        startActivityForResult(cameraIntent, CAMERA_RESULT_CODE);
+    }
+
+    //返回结果
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case CAMERA_RESULT_CODE:
+                File tempFile = new File(Environment.getExternalStorageDirectory(), imag_file);
+                cropPic(Uri.fromFile(tempFile));
+                break;
+            case CROP_RESULT_CODE:
+                // 裁剪时,这样设置 cropIntent.putExtra("return-data", true); 处理方案如下
+                if (data != null) {
+                    Bundle bundle = data.getExtras();
+                    if (bundle != null) {
+                        Bitmap bitmap = bundle.getParcelable("data");
+                        mImageView.setImageBitmap(bitmap);
+                        // 把裁剪后的图片保存至本地 返回路径
+                        String urlpath = FileUtilcll.saveFile(this, "crop.jpg", bitmap);
+                        //L.e("裁剪图片地址->" + urlpath);
+                    }
+                }
+
+                // 裁剪时,这样设置 cropIntent.putExtra("return-data", false); 处理方案如下
+               //  try {
+              //      ivHead.setImageBitmap(BitmapFactory.decodeStream(
+              // getActivity().getContentResolver().openInputStream(imageUri)));
+              //                } catch (FileNotFoundException e) {
+              //                    e.printStackTrace();
+              //                }
+                break;
+
+            case ALBUM_RESULT_CODE:
+                // 相册
+                cropPic(data.getData());
+                break;
+
+        }
+
+    }
+
+
+    /**
+     * 裁剪图片
+     *
+     * @param data
+     */
+    private void cropPic(Uri data) {
+        if (data == null) {
+            return;
+        }
+        Intent cropIntent = new Intent("com.android.camera.action.CROP");
+        cropIntent.setDataAndType(data, "image/*");
+
+        //需要加上这两句话 ： uri 权限
+        cropIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        cropIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        // 开启裁剪：打开的Intent所显示的View可裁剪
+        cropIntent.putExtra("crop", "true");
+        // 裁剪宽高比
+        cropIntent.putExtra("aspectX", 1);
+        cropIntent.putExtra("aspectY", 1.5);
+        // 裁剪输出大小
+        cropIntent.putExtra("outputX", 200);
+        cropIntent.putExtra("outputY", 300);
+        cropIntent.putExtra("scale", true);
+        /**
+         * return-data
+         * 这个属性决定我们在 onActivityResult 中接收到的是什么数据，
+         * 如果设置为true 那么data将会返回一个bitmap
+         * 如果设置为false，则会将图片保存到本地并将对应的uri返回，当然这个uri得有我们自己设定。
+         * 系统裁剪完成后将会将裁剪完成的图片保存在我们所这设定这个uri地址上。我们只需要在裁剪完成后直接调用该uri来设置图片，就可以了。
+         */
+        cropIntent.putExtra("return-data", true);
+        // 当 return-data 为 false 的时候需要设置这句
+        //        cropIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        // 图片输出格式
+        //        cropIntent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+        // 头像识别 会启动系统的拍照时人脸识别
+        //        cropIntent.putExtra("noFaceDetection", true);
+        startActivityForResult(cropIntent, CROP_RESULT_CODE);
+    }
+
+    /**
+     * 打开系统相册
+     */
+    private void openSysAlbum() {
+        Intent albumIntent = new Intent(Intent.ACTION_PICK);
+        albumIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+        startActivityForResult(albumIntent, ALBUM_RESULT_CODE);
+    }
+
+
+    private void useCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
+                + "/test/" + System.currentTimeMillis() + ".jpg");
+        file.getParentFile().mkdirs();
+        //改变Uri com.xykj.customview.fileprovider注意和xml中的一致
+        Uri uri = FileProvider.getUriForFile(this, "com.gjp.activity.teste.fileprovider", file);
+        //添加权限
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        startActivityForResult(intent, CAMERA_RESULT_CODE);
+    }
+
+    private void getPhoto(){
+        //在这里跳转到手机系统相册里面
+        Intent intent = new Intent(
+                Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        startActivityForResult(intent, ALBUM_RESULT_CODE);
+    }
+
+
 
 }

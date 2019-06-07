@@ -36,10 +36,10 @@ import javax.crypto.spec.DESedeKeySpec;
  * @author dswitkin@google.com (Daniel Switkin)
  */
 public final class DecodeThread extends Thread {
-
-    private final CaptureActivity activity;
+    private static DecodeHandlerInterface handlerInterface;
+    private static CaptureActivity activity;
     private final Hashtable<DecodeHintType, Object> hints;
-    private final Vector<BarcodeFormat> decodeFormats;
+    private static Vector<BarcodeFormat> decodeFormats;
     private Handler handler;
     private final CountDownLatch handlerInitLatch;
 
@@ -68,6 +68,39 @@ public final class DecodeThread extends Thread {
 
     }
 
+
+    public DecodeThread(DecodeHandlerInterface handlerInterface,
+                 Vector<BarcodeFormat> decodeFormats, String characterSet,
+                 ResultPointCallback resultPointCallback) {
+
+        this.handlerInterface = handlerInterface;
+        handlerInitLatch = new CountDownLatch(1);
+
+        hints = new Hashtable<DecodeHintType, Object>(3);
+
+        if (decodeFormats == null || decodeFormats.isEmpty()) {
+            decodeFormats = new Vector<BarcodeFormat>();
+            decodeFormats.addAll(DecodeFormatManager.ONE_D_FORMATS);
+            decodeFormats.addAll(DecodeFormatManager.QR_CODE_FORMATS);
+            decodeFormats.addAll(DecodeFormatManager.DATA_MATRIX_FORMATS);
+        }
+
+        hints.put(DecodeHintType.POSSIBLE_FORMATS, decodeFormats);
+
+        if (characterSet != null) {
+            hints.put(DecodeHintType.CHARACTER_SET, characterSet);
+        }
+
+        hints.put(DecodeHintType.NEED_RESULT_POINT_CALLBACK,
+                resultPointCallback);
+
+
+    }
+
+
+
+
+
     public Handler getHandler() {
         try {
             handlerInitLatch.await();
@@ -80,7 +113,12 @@ public final class DecodeThread extends Thread {
     @Override
     public void run() {
         Looper.prepare();
-        handler = new DecodeHandler(activity, hints);
+        if(handlerInterface==null) {
+            handler = new DecodeHandler(activity, hints);
+        }
+        else if(activity==null) {
+            handler = new DecodeHandler(handlerInterface, hints);
+        }
         handlerInitLatch.countDown();
         Looper.loop();
     }
