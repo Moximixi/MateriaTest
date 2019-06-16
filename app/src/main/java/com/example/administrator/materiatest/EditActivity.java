@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.nfc.Tag;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -76,6 +78,7 @@ public class EditActivity extends AppCompatActivity {
 
     private String imag_file;
     private File file;
+    private static int shelf_select=0;
 
 
     @Override
@@ -145,17 +148,22 @@ public class EditActivity extends AppCompatActivity {
         shelf_list=new ArrayList<String>();
         shelf_list.add("默认书架");
         shelf_list.add("添加新书架");
-        ArrayAdapter<String> adapter_shelf=new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,shelf_list);
+        final ArrayAdapter<String> adapter_shelf=new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,shelf_list);
         adapter_shelf.setDropDownViewResource(R.layout.edit_spinner_textview);
         spn_shelf.setAdapter(adapter_shelf);
         spn_shelf.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            final View  dialog_view=(RelativeLayout) getLayoutInflater().inflate(R.layout.edit_dialog_shelf_layout,null);
-            final EditText dialog_edit=(EditText)dialog_view.findViewById(R.id.dialog_edit);
-            final TextView dialog_text=(TextView)dialog_view.findViewById(R.id.dialog_text);
+            //View view = LayoutInflater.from(EditActivity.this).inflate(R.layout.edit_dialog, null);
+            AlertDialog alertDialog;
             @Override
             public void onItemSelected(AdapterView<?> parent, View view,
-                                       int position, long id) {
+                                       final int position, long id) {
+                View  dialog_view=(RelativeLayout) getLayoutInflater().inflate(R.layout.edit_dialog_shelf_layout,null);
+                final EditText dialog_edit=(EditText)dialog_view.findViewById(R.id.dialog_edit);
+                final TextView dialog_text=(TextView)dialog_view.findViewById(R.id.dialog_text);
+
+
                 String str=parent.getItemAtPosition(position).toString();
+
                 if(str.equals("添加新书架")){
                     AlertDialog.Builder dialog=new AlertDialog.Builder(EditActivity.this);
                     dialog.setTitle(R.string.dialog_title_shelf);
@@ -163,11 +171,16 @@ public class EditActivity extends AppCompatActivity {
                     dialog.setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            int length=shelf_list.size()-1;
-                            shelf_list.remove(length);
-                            shelf_list.add(dialog_edit.getText().toString());
-                            shelf_list.add("添加新书架");
-
+                            //int length=shelf_list.size()-1;
+                            adapter_shelf.remove("添加新书架");
+                            adapter_shelf.add(dialog_edit.getText().toString());
+                            adapter_shelf.add("添加新书架");
+                            //shelf_list.remove(length);
+                            //shelf_list.add(dialog_edit.getText().toString());
+                            //shelf_list.add("添加新书架");
+                            //adapter_shelf.notifyDataSetChanged();
+                            alertDialog.dismiss();
+                            shelf_select=position;
                         }
                     });
 
@@ -175,13 +188,16 @@ public class EditActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             //TODO
+                            alertDialog.dismiss();
+                            spn_shelf.setSelection(shelf_select);
                         }
                     });
 
-                    AlertDialog alertDialog=dialog.create();
+                    alertDialog=dialog.create();
                     alertDialog.show();
 
                     final Button post_button=alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                    post_button.setEnabled(false);
                     //设置editText的监听事件
                     dialog_edit.addTextChangedListener(new TextWatcher() {
                         @Override
@@ -210,6 +226,9 @@ public class EditActivity extends AppCompatActivity {
 
 
                 }//添加新书架判断语句结尾
+                else{
+                    shelf_select=position;
+                }
 
                 //Toast.makeText(EditActivity.this, "你点击的是:"+str, Toast.LENGTH_SHORT).show();
             }
@@ -250,7 +269,7 @@ public class EditActivity extends AppCompatActivity {
 
         dialog_text1.setText("0/15");
         final AlertDialog.Builder dialog1=new AlertDialog.Builder(EditActivity.this);
-        dialog1.setTitle(R.string.dialog_title_shelf);
+        dialog1.setTitle(R.string.dialog_title_tag);
         dialog1.setView(dialog_view1);
         dialog1.setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
             @Override
@@ -273,6 +292,7 @@ public class EditActivity extends AppCompatActivity {
         alertDialog1.show();
 
         final Button post_button1=alertDialog1.getButton(DialogInterface.BUTTON_POSITIVE);
+        post_button1.setEnabled(false);
         //设置editText的监听事件
         dialog_edit1.addTextChangedListener(new TextWatcher() {
             @Override
@@ -498,8 +518,15 @@ public class EditActivity extends AppCompatActivity {
                             time_month.setText(book.getTime_Month());
                             ISBN.setText(book.getISBN());
                             website.setText(book.getWebsite());
-                            mImageView.setImageBitmap(book.getBitmap());
-
+                            if(book.getBitmap()!=null){
+                                mImageView.setImageBitmap(book.getBitmap());
+                            }
+                            else {
+                                ImageView imageView =new ImageView(EditActivity.this);
+                                imageView.setImageResource(R.drawable.bookshelf);
+                                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.img_init_bitmap);
+                                mImageView.setImageBitmap(bitmap);
+                            }
                             break;
                         }
 

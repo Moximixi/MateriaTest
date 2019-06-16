@@ -278,6 +278,7 @@ public class MainActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
             }
         }
+        //批量编辑返回
         else if(requestCode==REQUEST_CODE_MultiSCAN){
             //确认完成
             if(resultCode==1){
@@ -286,8 +287,7 @@ public class MainActivity extends AppCompatActivity {
                 //ArrayList list = bundle.getParcelableArrayList("list");
                 //ArrayList<Book> booList= (ArrayList<Book>) list.get(0);
                 //StringBuffer bf=new StringBuffer();
-
-
+                multiAdd_show();
             }
 
         }
@@ -575,6 +575,56 @@ public class MainActivity extends AppCompatActivity {
     private void getLabelBook(int id){
 
     }
+
+    //批量添加返回后显示
+    public void multiAdd_show() {
+        bookList.clear();
+        myhelder = SQLiteHelper.getInstance(getApplicationContext());
+        db = myhelder.getReadableDatabase();
+        //获得游标
+        Cursor cursor = db.query("BookShelf", null, null, null, null, null, null);
+        //判断游标是否为空
+        if (cursor.moveToFirst()) {
+            while (cursor.moveToNext()) {
+                String isbn = cursor.getString(cursor.getColumnIndex("ISBN"));
+                String title = cursor.getString(cursor.getColumnIndex("title"));
+                String author = cursor.getString(cursor.getColumnIndex("author"));
+                String publisher = cursor.getString(cursor.getColumnIndex("publisher"));
+                String time_year = cursor.getString(cursor.getColumnIndex("time_year"));
+                String time_month = cursor.getString(cursor.getColumnIndex("time_month"));
+
+
+                byte[] bytes = cursor.getBlob(cursor.getColumnIndex("img_bitmap"));
+                Bitmap bitmap;
+                //判断空情况
+                if(bytes!=null) {
+                    bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, null);
+                }
+                else {
+                    ImageView imageView =new ImageView(this);
+                    imageView.setImageResource(R.drawable.bookshelf);
+                    bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.img_init_bitmap);
+                }
+                //构造函数会将图片的格式统一
+                bookList.add(new Book(title, author, publisher, time_year, time_month, bitmap));
+            }
+        }
+        cursor.close();
+        db.close();
+        myhelder.close();
+        //默认按照标题排序
+        final Collator myCollator = Collator.getInstance(java.util.Locale.CHINA);
+        Comparator<Book> BookComparatorBytitle = new Comparator<Book>() {
+            @Override
+            public int compare(Book o1, Book o2) {
+                if (myCollator.compare(o1.getTitle(), o2.getTitle()) > 0) return 1;
+                else return -1;
+            }
+        };
+        Collections.sort(bookList, BookComparatorBytitle);
+        adapter.notifyDataSetChanged();
+    }
+
 }
 
 
