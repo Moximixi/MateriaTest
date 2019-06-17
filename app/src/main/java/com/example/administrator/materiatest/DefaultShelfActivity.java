@@ -48,41 +48,12 @@ public class DefaultShelfActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(MenuItem item) {
                 mDrawLayout.closeDrawers();
                 switch(item.getItemId()){
-                    case R.id.nav_add:
-                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(DefaultShelfActivity.this);
-                        View view1 = View.inflate(DefaultShelfActivity.this, R.layout.add_layout, null);
-                        Button calcle=(Button)view1.findViewById(R.id.add_button_cancle);
-                        Button commit=(Button)view1.findViewById(R.id.add_button_commit);
-                        alertDialog
-                                .setTitle("添加标签")
-                                .setView(view1)
-                                .create();
-                        final AlertDialog show=alertDialog.show();
-                        calcle.setOnClickListener(new View.OnClickListener(){
-                            @Override
-                            public void onClick(View v) {
-                               // Toast.makeText(DefaultShelfActivity.this,"取消",Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                        commit.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                               // Toast.makeText(DefaultShelfActivity.this,"确定",Toast.LENGTH_SHORT).show();
-                                show.dismiss();
-                            }
-                        });
-                        break;
+
                     case R.id.nav_search:
                         // onSearchRequested();
                         break;
-                    case R.id.nav_setting:
-                        Intent intent=new Intent(DefaultShelfActivity.this,SettingActivity.class);
-                        startActivity(intent);
-                        break;
-                    case R.id.nav_about:
-                        Intent intent2=new Intent(DefaultShelfActivity.this,AboutActivity.class);
-                        startActivity(intent2);
-                        break;
+
+
                     default:
                 }
                 return true;

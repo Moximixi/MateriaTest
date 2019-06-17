@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.administrator.bookshelf.EditActivity">
+    <item
+        android:id="@+id/menu_write"
+        android:title="手动输入ISBN"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_add"
+        android:title="手动添加书籍"
+        app:showAsAction="never"
+        />
+    <item
+        android:id="@+id/menu_flash"
+        android:title=""
+        android:icon="@drawable/falsh_close"
+        app:showAsAction="ifRoom|withText"
+     />
+</menu>
